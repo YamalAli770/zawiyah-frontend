@@ -2,6 +2,7 @@ import Feature from "./components/Feature"
 import Footer from "./components/Footer"
 import Gallery from "./components/Gallery"
 import Hero from "./components/Hero"
+import Login from "./components/Login"
 import Navbar from "./components/Navbar"
 import Product from "./components/Product"
 import Register from "./components/Register"
@@ -27,6 +28,7 @@ function App() {
             <Route path="/shop" element={<Shop />} />
             <Route path="/shop/:id" element={<Product />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
           </Routes>
           <Footer />
         </BrowserRouter>
