@@ -1,3 +1,5 @@
+import About from "./components/About"
+import Contact from "./components/Contact"
 import Feature from "./components/Feature"
 import Footer from "./components/Footer"
 import Gallery from "./components/Gallery"
@@ -25,9 +27,11 @@ function App() {
                 <Statistic />
               </>
             } />
+            <Route path="/about" element={<About />} />
             <Route path="/shop" element={<Shop />} />
             <Route path="/shop/:id" element={<Product />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/contact" element={<Contact />} />
             <Route path="/login" element={<Login />} />
           </Routes>
           <Footer />
