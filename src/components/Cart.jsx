@@ -78,7 +78,7 @@ const Cart = ({ setIsCartOpen }) => {
                               <div class="flex">
                                 <button
                                   type="button"
-                                  class="font-medium text-indigo-600 hover:text-indigo-500"
+                                  class="font-medium text-customButton hover:text-indigo-500"
                                 >
                                   Remove
                                 </button>
@@ -111,7 +111,7 @@ const Cart = ({ setIsCartOpen }) => {
                               <div class="flex">
                                 <button
                                   type="button"
-                                  class="font-medium text-indigo-600 hover:text-indigo-500"
+                                  class="font-medium text-customButton hover:text-indigo-500"
                                 >
                                   Remove
                                 </button>
@@ -135,7 +135,7 @@ const Cart = ({ setIsCartOpen }) => {
                   <div class="mt-6">
                     <a
                       href="#"
-                      class="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
+                      class="flex items-center justify-center rounded-md border border-transparent bg-customButton px-6 py-3 text-base font-medium text-white shadow-sm hover:brightness-50"
                     >
                       Checkout
                     </a>
@@ -149,7 +149,7 @@ const Cart = ({ setIsCartOpen }) => {
                           navigate("/shop");
                         }}
                         type="button"
-                        class="font-medium text-indigo-600 hover:text-indigo-500 ml-2"
+                        class="font-medium text-customButton hover:brightness-50 ml-2"
                       >
                         Continue Shopping
                         <span aria-hidden="true"> &rarr;</span>
