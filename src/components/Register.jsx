@@ -1,5 +1,5 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React from "react";
+import { Link } from "react-router-dom";
 
 const Register = () => {
   return (
@@ -12,7 +12,7 @@ const Register = () => {
 
       <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form class="space-y-6" action="#" method="POST">
-        <div>
+          <div>
             <label
               for="username"
               class="block text-sm font-medium leading-6 text-gray-900"
@@ -71,6 +71,33 @@ const Register = () => {
             </div>
           </div>
 
+          {/* Dropdown */}
+
+          <div>
+            <div class="flex items-center justify-between">
+              <label
+                for="accType"
+                class="block text-sm font-medium leading-6 text-gray-900"
+              >
+                Account Type
+              </label>
+            </div>
+            <div class="mt-2">
+              <select
+                id="accType"
+                name="accType"
+                type="accType"
+                autocomplete="account-type"
+                required
+                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
+              >
+                <option value="" disabled selected>Select Your Option</option>
+                <option value="Seller">Seller</option>
+                <option value="Buyer">Buyer</option>
+              </select>
+            </div>
+          </div>
+
           <div>
             <button
               type="submit"
@@ -92,7 +119,7 @@ const Register = () => {
         </p>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Register
+export default Register;
