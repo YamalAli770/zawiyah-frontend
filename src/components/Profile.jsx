@@ -1,4 +1,6 @@
 import React from "react";
+import productData from "../assets/productData";
+import { Link } from "react-router-dom";
 
 const Profile = () => {
   return (
@@ -99,8 +101,26 @@ const Profile = () => {
                 </div>
               </div>
             </div>
-
-            <div class="my-4"></div>
+          </div>
+        </div>
+        {/* User Bids */}
+        <div className="flex flex-col items-center gap-8 max-w-90">
+          <h1 className="text-3xl font-bold">Products That You've Bid On</h1>
+          <div className="flex flex-wrap justify-center gap-5 max-w-90">
+            {/* Cards */}
+            {productData.map((product) => (
+              <Link to={`/shop/${product.id}`} class="w-72" key={product.id}>
+                <img
+                  src={product.img}
+                  class="rounded-t-lg h-48 w-full object-cover"
+                  alt=""
+                />
+                <div class="p-5 text-white bg-customButton">
+                  <h5 class="mb-2 text-2xl font-bold">{product.name}</h5>
+                  <p>Bid For ${product.price}</p>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </div>
