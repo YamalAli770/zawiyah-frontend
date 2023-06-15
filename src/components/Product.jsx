@@ -1,7 +1,42 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Modal from "./Modal";
+import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import axios from "axios";
+import { UserContext } from "../context/UserContext";
 
 const Product = () => {
+  const { user } = useContext(UserContext);
+
+  const { id } = useParams();
+
+  const [product, setProduct] = useState({});
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:4000/api/products/${id}`
+        );
+        if (response.data) {
+          setProduct(response.data);
+        }
+      } catch (error) {
+        toast.error(error.response.data.message, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          progress: undefined,
+          theme: "light",
+        }); 
+      }
+    };
+
+    fetchProduct();
+  }, []);
+  
   const [openModal, setOpenModal] = useState(false);
   return (
     <section className="text-gray-600 body-font overflow-hidden">
@@ -9,10 +44,10 @@ const Product = () => {
         <div className="lg:w-4/5 mx-auto flex flex-wrap">
           <div className="lg:w-1/2 w-full lg:pr-10 lg:py-6 mb-6 lg:mb-0">
             <h2 className="text-sm title-font text-gray-500 tracking-widest">
-              Zawiyah
+              {product.category}
             </h2>
             <h1 className="text-gray-900 text-3xl title-font font-medium mb-4">
-              Animated Night Hill Illustrations
+              {product.name}
             </h1>
             <div className="flex mb-4 w-10">
               <a className="flex-grow text-customButton border-b-2 border-customButton py-2 text-lg px-1">
@@ -20,23 +55,19 @@ const Product = () => {
               </a>
             </div>
             <p className="leading-relaxed mb-4">
-              Fam locavore kickstarter distillery. Mixtape chillwave tumeric
-              sriracha taximy chia microdosing tilde DIY. XOXO fam inxigo
-              juiceramps cornhole raw denim forage brooklyn. Everyday carry +1
-              seitan poutine tumeric. Gastropub blue bottle austin listicle
-              pour-over, neutra jean.
+              {product.description}
             </p>
-            <div className="flex border-t border-gray-200 py-2">
+            { product.color && <div className="flex border-t border-gray-200 py-2">
               <span className="text-gray-500">Color</span>
-              <span className="ml-auto text-gray-900">Blue</span>
-            </div>
-            <div className="flex border-t border-gray-200 py-2">
+              <span className="ml-auto text-gray-900">{product.color}</span>
+            </div>}
+            { product.size && <div className="flex border-t border-gray-200 py-2">
               <span className="text-gray-500">Size</span>
-              <span className="ml-auto text-gray-900">Medium</span>
-            </div>
+              <span className="ml-auto text-gray-900">{product.size}</span>
+            </div>}
             <div className="flex mt-8">
               <span className="title-font font-medium text-2xl text-gray-900">
-                $58.00
+                ${product.currentPrice}
               </span>
               <button className="flex ml-auto text-white bg-customButton border-0 py-2 px-6 focus:outline-none hover:brightness-50 rounded" onClick={() => setOpenModal(true)}>
                 Bid Now
@@ -58,11 +89,11 @@ const Product = () => {
           <img
             alt="ecommerce"
             className="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded"
-            src="https://images.unsplash.com/photo-1675635425432-224e15ee6703?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTA2fHxoYW5kaWNyYWZ0c3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=600&q=60"
+            src={`http://localhost:4000/${product.image}`}
           />
         </div>
       </div>
-      {openModal && <Modal setOpenModal={setOpenModal} /> };
+      {openModal && <Modal user={user} id={id} currentPrice={product.currentPrice} setOpenModal={setOpenModal} /> };
     </section>
   );
 };

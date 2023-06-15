@@ -1,6 +1,73 @@
-import React from "react";
+import axios from "axios";
+import React, { useContext, useState } from "react";
+import { toast } from "react-toastify";
 
-const Modal = ({ setOpenModal }) => {
+const Modal = ({ user, id, currentPrice, setOpenModal }) => {
+  const [bidAmount, setBidAmount] = useState("");
+
+  const handleBidSubmit = async () => {
+    if (!bidAmount || isNaN(bidAmount) || bidAmount <= 0) {
+      toast.error("Please enter a valid bid amount.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        progress: undefined,
+        theme: "light"
+      });
+      return;
+    }
+
+    if(bidAmount <= currentPrice) {
+      toast.error("Please enter a bid amount greater than the current bid.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        progress: undefined,
+        theme: "light"
+      });
+      return;
+    }
+
+    try {
+      const response = await axios.post("http://localhost:4000/api/bid/create", { bidAmount, bidOn: id}, {
+          headers: {
+            Authorization: 'Bearer ' + user.accessToken,
+        }
+      });
+      if (response.data) {
+        const UserId = response.data.bidBy;
+        const addToCartResponse = await axios.post("http://localhost:4000/api/cart/add", { id: UserId, productId: id }, {
+          headers: {
+            Authorization: 'Bearer ' + user.accessToken,
+          }
+        });
+        if (addToCartResponse.data) {
+          setOpenModal(false);
+          location.reload();
+        }
+        else {
+          setOpenModal(false);
+        }
+      }
+    } catch (error) {
+      toast.info(error.response.data.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        progress: undefined,
+        theme: "light"
+      });
+      setOpenModal(false);
+      location.reload();
+    }
+  };
+
   return (
     <div
       className="relative z-10"
@@ -20,11 +87,11 @@ const Modal = ({ setOpenModal }) => {
                     className="text-base font-semibold leading-6 text-gray-900"
                     id="modal-title"
                   >
-                    Current Highest Bid: $58.00
+                    Current Highest Bid: ${currentPrice}
                   </h3>
                   <div className="mt-4 mb-4">
                     <label htmlFor="bid">Set Your Bid: </label>
-                    <input className="border-b pl-2 text-gray-700 focus:outline-none focus:shadow-outline" type="number" name="bid" id="bid" />
+                    <input className="border-b pl-2 text-gray-700 focus:outline-none focus:shadow-outline" type="number" name="bid" id="bid" value={bidAmount} onChange={(e) => setBidAmount(e.target.value)}/>
                   </div>
                   <p className="text-xs my-2 text-red-600">Note: The bid once placed cannot be undone.</p>
                 </div>
@@ -33,6 +100,7 @@ const Modal = ({ setOpenModal }) => {
             <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
               <button
                 type="button"
+                onClick={handleBidSubmit}
                 className="inline-flex w-full justify-center rounded-md bg-customButton px-3 py-2 text-sm font-semibold text-white shadow-sm hover:brightness-50 sm:ml-3 sm:w-auto"
               >
                 Place Bid

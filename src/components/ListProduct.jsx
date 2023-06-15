@@ -1,15 +1,108 @@
-import React from "react";
+import React, { useContext, useState } from "react";
+import { UserContext } from "../context/UserContext";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const ListProduct = () => {
+  const { user } = useContext(UserContext);
+  const navigate = useNavigate();
+  const [productData, setProductData] = useState({
+    brand: "",
+    name: "",
+    category: "",
+    description: "",
+    color: "",
+    size: "",
+    price: "",
+  });
+
+  const [image, setImage] = useState(null);
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setProductData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    setImage(file);
+    console.log(file);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData();
+    formData.append("brand", productData.brand);
+    formData.append("name", productData.name);
+    formData.append("category", productData.category);
+    formData.append("description", productData.description);
+    formData.append("color", productData.color);
+    formData.append("size", productData.size);
+    formData.append("initialPrice", productData.price);
+    formData.append("image", image);
+
+    console.log(formData);
+
+    try {
+      const response = await axios.post("http://localhost:4000/api/products/create", formData, {
+        headers: {
+          Authorization: 'Bearer ' + user.accessToken,
+        },
+      });
+      if(response.data) {
+        toast.success("Product created successfully", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          progress: undefined,
+          theme: "light"
+        });
+        console.log("Product created:", response.data);
+      }
+
+      // Reset the form after successful login
+      setProductData({
+        brand: "",
+        title: "",
+        description: "",
+        color: "",
+        size: "",
+        price: "",
+      });
+      setImage(null);
+
+      // Redirect to the desired page after successful login
+      navigate("/shop");
+
+    } catch (error) {
+      toast.error(error.response.data.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        progress: undefined,
+        theme: "light"
+      });
+    }
+  };
+
   return (
     <section className="text-gray-600 body-font overflow-hidden">
       <div className="container px-5 py-24 mx-auto">
         <div className="lg:w-4/5 mx-auto flex flex-wrap">
-          <div className="lg:w-1/2 w-full lg:pr-10 lg:py-6 mb-6 lg:mb-0">
+          <form onSubmit={handleSubmit} className="lg:w-1/2 w-full lg:pr-10 lg:py-6 mb-6 lg:mb-0">
             {/* Brand  */}
             <div>
               <label
-                htmlFor="Brand"
+                htmlFor="brand"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
                 Brand
@@ -21,25 +114,50 @@ const ListProduct = () => {
                   type="text"
                   autoComplete="brand"
                   required
+                  value={productData.brand}
+                  onChange={handleInputChange}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
                 />
               </div>
             </div>
-            {/* Title */}
+            {/* Name */}
             <div className="mt-2 mb-2">
               <label
-                htmlFor="title"
+                htmlFor="name"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Title
+                Name
               </label>
               <div className="mt-2">
                 <input
-                  id="title"
-                  name="title"
+                  id="name"
+                  name="name"
                   type="text"
-                  autoComplete="title"
+                  autoComplete="name"
                   required
+                  value={productData.name}
+                  onChange={handleInputChange}
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
+                />
+              </div>
+            </div>
+            {/* Category  */}
+            <div className="inline">
+              <label
+                htmlFor="category"
+                className="block text-sm font-medium leading-6 text-gray-900"
+              >
+                Category
+              </label>
+              <div className="mt-2 mb-2">
+                <input
+                  id="category"
+                  name="category"
+                  type="text"
+                  autoComplete="category"
+                  required
+                  value={productData.category}
+                  onChange={handleInputChange}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
                 />
               </div>
@@ -60,6 +178,8 @@ const ListProduct = () => {
                   type="text"
                   autoComplete="description"
                   required
+                  value={productData.description}
+                  onChange={handleInputChange}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
                 />
               </div>
@@ -78,7 +198,8 @@ const ListProduct = () => {
                   name="color"
                   type="text"
                   autoComplete="color"
-                  required
+                  value={productData.color}
+                  onChange={handleInputChange}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
                 />
               </div>
@@ -97,7 +218,8 @@ const ListProduct = () => {
                   name="size"
                   type="text"
                   autoComplete="size"
-                  required
+                  value={productData.size}
+                  onChange={handleInputChange}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
                 />
               </div>
@@ -112,11 +234,13 @@ const ListProduct = () => {
               </label>
               <div className="mt-2">
                 <input
-                  id="size"
-                  name="size"
+                  id="image"
+                  name="image"
                   type="file"
-                  autoComplete="size"
+                  autoComplete="image"
                   required
+                  value={productData.image}
+                  onChange={handleImageChange}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
                 />
               </div>
@@ -134,20 +258,24 @@ const ListProduct = () => {
                   type="number"
                   id="price"
                   name="price"
+                  autoComplete="price"
+                  required
+                  value={productData.price}
+                  onChange={handleInputChange}
                   className="block rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-
                 indigo-600 sm:text-sm sm:leading-6 p-2"
                 />
               </div>
-              <button className="flex ml-auto text-white bg-customButton border-0 py-2 px-6 focus:outline-none hover:brightness-50 rounded h-max">
+              <button type="submit" className="flex ml-auto text-white bg-customButton border-0 py-2 px-6 focus:outline-none hover:brightness-50 rounded h-max">
                 List Now
               </button>
             </div>
-          </div>
-          <img
+          </form>
+          { image && <img
             alt="ecommerce"
             className="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded"
-            src="https://images.unsplash.com/photo-1675635425432-224e15ee6703?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTA2fHxoYW5kaWNyYWZ0c3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=600&q=60"
-          />
+            src={URL.createObjectURL(image)}
+          />}
         </div>
       </div>
     </section>

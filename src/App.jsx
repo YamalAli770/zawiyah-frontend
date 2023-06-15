@@ -14,6 +14,8 @@ import Profile from "./components/Profile"
 import Register from "./components/Register"
 import Shop from "./components/Shop"
 import Statistic from "./components/Statistic"
+import Success from "./components/Success"
+import Cancel from "./components/Cancel"
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 function App() {
@@ -41,6 +43,8 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/login" element={<Login />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/success" element={<Success />} />
+            <Route path="/cancel" element={<Cancel />} />
           </Routes>
           <Footer />
         </BrowserRouter>

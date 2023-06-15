@@ -1,9 +1,44 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineShoppingCart, AiOutlineUser } from "react-icons/ai";
+import { UserContext } from "../context/UserContext";
+import { toast } from "react-toastify";
+import axios from "axios";
+import Cart from "./Cart";
 
-const Navbar = ({ setIsCartOpen }) => {
-  const [user, setUser] = useState(null);
+const Navbar = ({ }) => {
+  const navigate = useNavigate();
+  const { user, dispatch } = useContext(UserContext);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const handleLogout = async () => {
+    try {
+      const res = await axios.get('http://localhost:4000/api/auth/logout');
+      if(res.status === 204) {
+          dispatch({ type: 'LOGOUT_USER' });
+          localStorage.clear();
+          navigate('/');
+          toast.success("User Successfully Logged Out", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            progress: undefined,
+            theme: "light"
+          });
+      }
+  } catch (error) {
+      toast.error("Cannot Logout User", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        progress: undefined,
+        theme: "light"
+      });
+  }
+  };
   return (
     <header className="text-gray-600 body-font">
       <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
@@ -26,6 +61,12 @@ const Navbar = ({ setIsCartOpen }) => {
           <Link to="/contact" className="mr-5 hover:text-gray-900">
             Contact
           </Link>
+          { user && user.accountType.toLowerCase() === "seller" && <Link to="/new" className="mr-5 hover:text-gray-900">
+            List Product
+          </Link>}
+          { user && <button onClick={handleLogout} className="mr-5 hover:text-gray-900">
+            Logout
+          </button>}
         </nav>
         { !user ? (
           <Link
@@ -61,6 +102,7 @@ const Navbar = ({ setIsCartOpen }) => {
           </div>
         )}
       </div>
+      {isCartOpen && <Cart setIsCartOpen={setIsCartOpen} />}
     </header>
   );
 };

@@ -1,102 +1,127 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import productData from "../assets/productData";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const Profile = () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const [userData, setUserData] = useState({});
+  const [userBidProducts, setUserBidProducts] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userDataResponse = await axios.get(`http://localhost:4000/api/user/${user.username}`);
+        const bidProductsIds = userDataResponse.data.productsBidOn;
+        setUserData(userDataResponse.data);
+
+        const productsResponse = await axios.get(`http://localhost:4000/api/products`);
+        const userBidProducts = productsResponse.data.filter((product) =>
+          bidProductsIds.includes(product._id)
+        );
+        setUserBidProducts(userBidProducts);
+      } catch (error) {
+        toast.error("Failed to fetch data");
+      }
+    };
+
+    fetchData();
+  }, [user.username]);
+
   return (
+    <>
     <div className="text-gray-600 body-font">
-      <div class="w-full text-white">
+      <div className="w-full text-white">
         <div
           x-data="{ open: false }"
-          class="flex flex-col max-w-screen-xl px-4 mx-auto md:items-center md:justify-between md:flex-row md:px-6 lg:px-8"
+          className="flex flex-col max-w-screen-xl px-4 mx-auto md:items-center md:justify-between md:flex-row md:px-6 lg:px-8"
         ></div>
       </div>
 
-      <div class="container mx-auto my-5 p-5">
-        <div class="md:flex no-wrap md:-mx-2 ">
-          <div class="w-full md:w-3/12 md:mx-2">
-            <div class="bg-white p-3 border-t-4">
-              <div class="image overflow-hidden">
+      { userData && Object.keys(userData).length !== 0 && <div className="container mx-auto my-5 p-5">
+        <div className="md:flex no-wrap md:-mx-2 ">
+          <div className="w-full md:w-3/12 md:mx-2">
+            <div className="bg-white p-3 border-t-4">
+              <div className="image overflow-hidden">
                 <img
-                  class="h-auto w-full mx-auto"
+                  className="h-auto w-full mx-auto"
                   src="https://lavinephotography.com.au/wp-content/uploads/2017/01/PROFILE-Photography-112.jpg"
                   alt=""
                 />
               </div>
-              <h1 class="text-gray-900 font-bold text-xl leading-8 my-1">
-                Jane Doe
+              <h1 className="text-gray-900 font-bold text-xl leading-8 my-1">
+                { userData.username.charAt(0).toUpperCase() + userData.username.slice(1) }
               </h1>
-              <h3 class="text-gray-600 font-lg text-semibold leading-6">
+              <h3 className="text-gray-600 font-lg text-semibold leading-6">
                 Owner at Her Company Inc.
               </h3>
-              <p class="text-sm text-gray-500 hover:text-gray-600 leading-6">
+              <p className="text-sm text-gray-500 hover:text-gray-600 leading-6">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit.
                 Reprehenderit, eligendi dolorum sequi illum qui unde aspernatur
                 non deserunt
               </p>
-              <ul class="bg-gray-100 text-gray-600 hover:text-gray-700 hover:shadow py-2 px-3 mt-3 divide-y rounded shadow-sm">
-                <li class="flex items-center py-3">
+              <ul className="bg-gray-100 text-gray-600 hover:text-gray-700 hover:shadow py-2 px-3 mt-3 divide-y rounded shadow-sm">
+                <li className="flex items-center py-3">
                   <span>Member since</span>
-                  <span class="ml-auto">Nov 07, 2016</span>
+                  <span className="ml-auto">{
+                    new Date(userData.createdAt).toLocaleDateString("en-GB", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })
+                  }</span>
                 </li>
               </ul>
             </div>
-            <div class="my-4"></div>
+            <div className="my-4"></div>
           </div>
-          <div class="w-full md:w-9/12 mx-2 h-64">
-            <div class="bg-white p-3 shadow-sm rounded-sm">
-              <div class="flex items-center space-x-2 font-semibold text-gray-900 leading-8">
+          <div className="w-full md:w-9/12 mx-2 h-64">
+            <div className="bg-white p-3 shadow-sm rounded-sm">
+              <div className="flex items-center space-x-2 font-semibold text-gray-900 leading-8">
                 <span clas="text-green-500">
                   <svg
-                    class="h-5"
+                    className="h-5"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
                   >
                     <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
                       d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                     />
                   </svg>
                 </span>
-                <span class="tracking-wide">About</span>
+                <span className="tracking-wide">About</span>
               </div>
-              <div class="text-gray-700">
-                <div class="grid md:grid-cols-2 text-sm">
-                  <div class="grid grid-cols-2">
-                    <div class="px-4 py-2 font-semibold">First Name</div>
-                    <div class="px-4 py-2">Ahmed</div>
+              <div className="text-gray-700">
+                <div className="grid md:grid-cols-2 text-sm">
+                  <div className="grid grid-cols-2">
+                    <div className="px-4 py-2 font-semibold">Username</div>
+                    <div className="px-4 py-2">{userData.username}</div>
                   </div>
-                  <div class="grid grid-cols-2">
-                    <div class="px-4 py-2 font-semibold">Last Name</div>
-                    <div class="px-4 py-2">Ali</div>
+                  <div className="grid grid-cols-2">
+                    <div className="px-4 py-2 font-semibold">Current Address</div>
+                    <div className="px-4 py-2">Gulshan-e-Iqbal, Karachi</div>
                   </div>
-                  <div class="grid grid-cols-2">
-                    <div class="px-4 py-2 font-semibold">Contact Number</div>
-                    <div class="px-4 py-2">+92 3203934785</div>
+                  <div className="grid grid-cols-2">
+                    <div className="px-4 py-2 font-semibold">Permanent Address</div>
+                    <div className="px-4 py-2">Gulshan-e-Iqbal, Karachi</div>
                   </div>
-                  <div class="grid grid-cols-2">
-                    <div class="px-4 py-2 font-semibold">Current Address</div>
-                    <div class="px-4 py-2">Gulshan-e-Iqbal, Karachi</div>
-                  </div>
-                  <div class="grid grid-cols-2">
-                    <div class="px-4 py-2 font-semibold">Permanent Address</div>
-                    <div class="px-4 py-2">Gulshan-e-Iqbal, Karachi</div>
-                  </div>
-                  <div class="grid grid-cols-2">
-                    <div class="px-4 py-2 font-semibold">Email.</div>
-                    <div class="px-4 py-2">
-                      <a class="text-blue-800" href="mailto:ahmedali@gmail.com">
-                        ahmedali@gmail.com
+                  <div className="grid grid-cols-2">
+                    <div className="px-4 py-2 font-semibold">Email.</div>
+                    <div className="px-4 py-2">
+                      <a className="text-blue-800" href="mailto:ahmedali@gmail.com">
+                        {userData.email}
                       </a>
                     </div>
                   </div>
-                  <div class="grid grid-cols-2">
-                    <div class="px-4 py-2 font-semibold">Birthday</div>
-                    <div class="px-4 py-2">Feb 06, 1998</div>
+                  <div className="grid grid-cols-2">
+                    <div className="px-4 py-2 font-semibold">Birthday</div>
+                    <div className="px-4 py-2">Feb 06, 1998</div>
                   </div>
                 </div>
               </div>
@@ -108,23 +133,24 @@ const Profile = () => {
           <h1 className="text-3xl font-bold">Products That You've Bid On</h1>
           <div className="flex flex-wrap justify-center gap-5 max-w-90">
             {/* Cards */}
-            {productData.map((product) => (
-              <Link to={`/shop/${product.id}`} class="w-72" key={product.id}>
+            {userBidProducts.map((product) => (
+              <Link key={product._id} to={`/shop/${product._id}`} className="w-72">
                 <img
-                  src={product.img}
-                  class="rounded-t-lg h-48 w-full object-cover"
+                  src={`http://localhost:4000/${product.image}`}
+                  className="rounded-t-lg h-48 w-full object-cover"
                   alt=""
                 />
-                <div class="p-5 text-white bg-customButton">
-                  <h5 class="mb-2 text-2xl font-bold">{product.name}</h5>
-                  <p>Bid For ${product.price}</p>
+                <div className="p-5 text-white bg-customButton">
+                  <h5 className="mb-2 text-2xl font-bold">{product.name}</h5>
+                  <p>Bid For ${product.currentPrice}</p>
                 </div>
               </Link>
             ))}
           </div>
         </div>
-      </div>
+      </div>}
     </div>
+    </>
   );
 };
 
