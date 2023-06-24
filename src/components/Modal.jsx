@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useContext, useState } from "react";
 import { toast } from "react-toastify";
+import { API_URL } from "../../config";
 
 const Modal = ({ user, id, currentPrice, setOpenModal }) => {
   const [bidAmount, setBidAmount] = useState("");
@@ -33,14 +34,14 @@ const Modal = ({ user, id, currentPrice, setOpenModal }) => {
     }
 
     try {
-      const response = await axios.post("http://localhost:4000/api/bid/create", { bidAmount, bidOn: id}, {
+      const response = await axios.post(`${API_URL}api/bid/create`, { bidAmount, bidOn: id}, {
           headers: {
             Authorization: 'Bearer ' + user.accessToken,
         }
       });
       if (response.data) {
         const UserId = response.data.bidBy;
-        const addToCartResponse = await axios.post("http://localhost:4000/api/cart/add", { id: UserId, productId: id }, {
+        const addToCartResponse = await axios.post(`${API_URL}api/cart/add`, { id: UserId, productId: id }, {
           headers: {
             Authorization: 'Bearer ' + user.accessToken,
           }

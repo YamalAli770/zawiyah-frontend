@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 import axios from "axios";
 import { loadStripe } from "@stripe/stripe-js";
+import { API_URL } from '../../config'
 
 const Cart = ({ setIsCartOpen }) => {
   const { user } = useContext(UserContext);
@@ -14,7 +15,7 @@ const Cart = ({ setIsCartOpen }) => {
     const getCart = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:4000/api/user/${user.username}`,
+          `${API_URL}api/user/${user.username}`,
           {
             headers: {
               Authorization: "Bearer " + user.accessToken,
@@ -23,7 +24,7 @@ const Cart = ({ setIsCartOpen }) => {
         );
         if (response.data) {
           const cartResponse = await axios.get(
-            `http://localhost:4000/api/cart/${response.data._id}`,
+            `${API_URL}api/cart/${response.data._id}`,
             {
               headers: {
                 Authorization: "Bearer " + user.accessToken,
@@ -36,7 +37,7 @@ const Cart = ({ setIsCartOpen }) => {
             setCartTotal(cartResponse.data.cartTotal);
 
             const allProducts = await axios.get(
-              "http://localhost:4000/api/products"
+              `${API_URL}api/products`
             );
 
             const cartProducts = allProducts.data.filter((product) => {
@@ -55,7 +56,7 @@ const Cart = ({ setIsCartOpen }) => {
   const makePayment = async () => { 
     const stripe = await loadStripe("pk_test_51NGz4VLy4KQTHDHQcyn2NVqBp4O92AdK4fBvqog5b1pRG8CCkVEThInJ7ol0DgqNBs9toTA2GvBWFlha3CaO15y000o83A6CTp"); 
  
-    const response = await fetch("http://localhost:4000/api/create-checkout-session", {
+    const response = await fetch(`${API_URL}api/create-checkout-session`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -78,7 +79,7 @@ const Cart = ({ setIsCartOpen }) => {
     else {
       console.log("Payment successful!");
       const clearCartResponse = await axios.delete(
-        `http://localhost:4000/api/cart/clear/${user.username}`,
+        `${API_URL}api/cart/clear/${user.username}`,
         {
           headers: {
             Authorization: "Bearer " + user.accessToken,
@@ -93,7 +94,7 @@ const Cart = ({ setIsCartOpen }) => {
       }
       try {
         const createOrderResponse = await axios.post(
-          "http://localhost:4000/api/order/create",
+          `${API_URL}api/order/create`,
           {
             orderProducts: cartProducts.map((product) => product._id),
             orderTotal: cartTotal,
@@ -180,7 +181,7 @@ const Cart = ({ setIsCartOpen }) => {
                                     <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                       <img
                                         src={
-                                          "http://localhost:4000/" + item.image
+                                          `${API_URL}` + item.image
                                         }
                                         alt={item.name}
                                         className="h-full w-full object-cover object-center"

@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { API_URL } from "../../config";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ const Login = () => {
 
     dispatch({ type: "LOGIN_START" });
     try {
-      const response = await axios.post("http://localhost:4000/api/auth/login", {
+      const response = await axios.post(`${API_URL}api/auth/login`, {
         email,
         password
       }, { withCredentials: true });

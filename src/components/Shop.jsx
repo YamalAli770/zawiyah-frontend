@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { API_URL } from "../../config";
 
 const Shop = () => {
   const [products, setProducts] = useState([]);
@@ -10,7 +11,7 @@ const Shop = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/api/products");
+        const response = await axios.get(`${API_URL}api/products`);
         if(response.data) {
           setProducts(response.data);
         }
@@ -41,7 +42,7 @@ const Shop = () => {
                   <img
                     alt="ecommerce"
                     className="object-cover object-center w-full h-full block"
-                    src={`http://localhost:4000/${product.image}`}
+                    src={`${API_URL}${product.image}`}
                   />
                 </div>
                 <div className="mt-4">

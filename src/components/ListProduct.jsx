@@ -3,6 +3,7 @@ import { UserContext } from "../context/UserContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../../config";
 
 const ListProduct = () => {
   const { user } = useContext(UserContext);
@@ -49,7 +50,7 @@ const ListProduct = () => {
     console.log(formData);
 
     try {
-      const response = await axios.post("http://localhost:4000/api/products/create", formData, {
+      const response = await axios.post(`${API_URL}api/products/create`, formData, {
         headers: {
           Authorization: 'Bearer ' + user.accessToken,
         },

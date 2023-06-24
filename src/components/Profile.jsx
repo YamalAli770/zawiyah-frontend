@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { API_URL } from "../../config";
 
 const Profile = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -11,11 +12,11 @@ const Profile = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userDataResponse = await axios.get(`http://localhost:4000/api/user/${user.username}`);
+        const userDataResponse = await axios.get(`${API_URL}api/user/${user.username}`);
         const bidProductsIds = userDataResponse.data.productsBidOn;
         setUserData(userDataResponse.data);
 
-        const productsResponse = await axios.get(`http://localhost:4000/api/products`);
+        const productsResponse = await axios.get(`${API_URL}api/products`);
         const userBidProducts = productsResponse.data.filter((product) =>
           bidProductsIds.includes(product._id)
         );
@@ -135,7 +136,7 @@ const Profile = () => {
             {userBidProducts.map((product) => (
               <Link key={product._id} to={`/shop/${product._id}`} className="w-72">
                 <img
-                  src={`http://localhost:4000/${product.image}`}
+                  src={`${API_URL}${product.image}`}
                   className="rounded-t-lg h-48 w-full object-cover"
                   alt=""
                 />

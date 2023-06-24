@@ -5,6 +5,7 @@ import { UserContext } from "../context/UserContext";
 import { toast } from "react-toastify";
 import axios from "axios";
 import Cart from "./Cart";
+import { API_URL } from "../../config";
 
 const Navbar = ({ }) => {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ const Navbar = ({ }) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const handleLogout = async () => {
     try {
-      const res = await axios.get('http://localhost:4000/api/auth/logout');
+      const res = await axios.get(`${API_URL}api/auth/logout`);
       if(res.status === 204) {
           dispatch({ type: 'LOGOUT_USER' });
           localStorage.clear();

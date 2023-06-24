@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { UserContext } from "../context/UserContext";
+import { API_URL } from "../../config";
 
 const Product = () => {
   const { user } = useContext(UserContext);
@@ -16,7 +17,7 @@ const Product = () => {
     const fetchProduct = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:4000/api/products/${id}`
+          `${API_URL}api/products/${id}`
         );
         if (response.data) {
           setProduct(response.data);
@@ -96,7 +97,7 @@ const Product = () => {
           <img
             alt="ecommerce"
             className="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded"
-            src={`http://localhost:4000/${product.image}`}
+            src={`${API_URL}${product.image}`}
           />
         </div>
       </div>
