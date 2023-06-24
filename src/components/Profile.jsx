@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import productData from "../assets/productData";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -130,7 +129,7 @@ const Profile = () => {
         </div>
         {/* User Bids */}
         <div className="flex flex-col items-center gap-8 max-w-90">
-          <h1 className="text-3xl font-bold">Products That You've Bid On</h1>
+          { userBidProducts.length > 1 && <h1 className="text-3xl font-bold">Products That You've Bid On</h1>}
           <div className="flex flex-wrap justify-center gap-5 max-w-90">
             {/* Cards */}
             {userBidProducts.map((product) => (

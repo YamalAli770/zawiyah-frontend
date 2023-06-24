@@ -36,6 +36,13 @@ const Product = () => {
 
     fetchProduct();
   }, []);
+
+  const isBiddingTimeValid = () => {
+    const currentTime = new Date();
+    const createdTime = new Date(product.createdAt);
+    const oneDayInMillis = 5 * 24 * 60 * 60 * 1000; // One day in milliseconds
+    return currentTime - createdTime <= oneDayInMillis;
+  };
   
   const [openModal, setOpenModal] = useState(false);
   return (
@@ -69,9 +76,9 @@ const Product = () => {
               <span className="title-font font-medium text-2xl text-gray-900">
                 ${product.currentPrice}
               </span>
-              <button className="flex ml-auto text-white bg-customButton border-0 py-2 px-6 focus:outline-none hover:brightness-50 rounded" onClick={() => setOpenModal(true)}>
+              { user && isBiddingTimeValid() && <button className="flex ml-auto text-white bg-customButton border-0 py-2 px-6 focus:outline-none hover:brightness-50 rounded" onClick={() => setOpenModal(true)}>
                 Bid Now
-              </button>
+              </button>}
               <button className="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4">
                 <svg
                   fill="currentColor"

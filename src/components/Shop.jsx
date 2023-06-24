@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-
 const Shop = () => {
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();

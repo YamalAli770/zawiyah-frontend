@@ -8,6 +8,7 @@ const Cart = ({ setIsCartOpen }) => {
   const { user } = useContext(UserContext);
   const [cart, setCart] = useState([]);
   const [cartProducts, setCartProducts] = useState([]);
+  const [cartTotal, setCartTotal] = useState(0);
 
   useEffect(() => {
     const getCart = async () => {
@@ -32,6 +33,7 @@ const Cart = ({ setIsCartOpen }) => {
           if (cartResponse.data) {
             setCart(cartResponse.data.cartItems);
             const productIds = cartResponse.data.cartItems;
+            setCartTotal(cartResponse.data.cartTotal);
 
             const allProducts = await axios.get(
               "http://localhost:4000/api/products"
@@ -74,6 +76,7 @@ const Cart = ({ setIsCartOpen }) => {
       console.log(result.error); 
     } 
     else {
+      console.log("Payment successful!");
       const clearCartResponse = await axios.delete(
         `http://localhost:4000/api/cart/clear/${user.username}`,
         {
@@ -81,10 +84,34 @@ const Cart = ({ setIsCartOpen }) => {
             Authorization: "Bearer " + user.accessToken,
           },
       });
+      console.log("Cart cleared!")
+      
       if (clearCartResponse.data) {
         console.log(clearCartResponse);
         setCart([]);
         setCartProducts([]);
+      }
+      try {
+        const createOrderResponse = await axios.post(
+          "http://localhost:4000/api/order/create",
+          {
+            orderProducts: cartProducts.map((product) => product._id),
+            orderTotal: cartTotal,
+            orderStatus: "pending", // Set the initial status as "pending"
+            orderPlacedBy: user.username,
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + user.accessToken,
+            },
+          }
+        );
+
+        console.log(createOrderResponse.data);
+        // Do something with the created order data, such as displaying a success message or redirecting to an order confirmation page
+      } catch (error) {
+        console.log(error.response.data.message);
+        // Handle any error that occurred during order creation
       }
     }
   }; 
@@ -178,12 +205,12 @@ const Cart = ({ setIsCartOpen }) => {
                                       </div>
                                       <div className="flex flex-1 items-end justify-between text-sm">
                                         <div className="flex">
-                                          <button
+                                          {/* <button
                                             type="button"
                                             className="font-medium text-customButton hover:text-indigo-500"
                                           >
                                             Remove
-                                          </button>
+                                          </button> */}
                                         </div>
                                       </div>
                                     </div>
@@ -204,7 +231,7 @@ const Cart = ({ setIsCartOpen }) => {
                     <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
                       <div className="flex justify-between text-base font-medium text-gray-900">
                         <p>Subtotal</p>
-                        <p>$262.00</p>
+                        <p>${cartTotal}</p>
                       </div>
                       <p className="mt-0.5 text-sm text-gray-500">
                         Shipping and taxes calculated at checkout.

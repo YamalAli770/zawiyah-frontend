@@ -48,6 +48,7 @@ const Modal = ({ user, id, currentPrice, setOpenModal }) => {
         if (addToCartResponse.data) {
           setOpenModal(false);
           location.reload();
+          console.log(addToCartResponse.data);
         }
         else {
           setOpenModal(false);
@@ -64,7 +65,6 @@ const Modal = ({ user, id, currentPrice, setOpenModal }) => {
         theme: "light"
       });
       setOpenModal(false);
-      location.reload();
     }
   };
 
