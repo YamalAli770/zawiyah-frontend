@@ -10,4 +10,18 @@
       margin: 0;
       -moz-appearance: textfield !important;
     }
- }
+}
+
+.my-config {
+  --cfg-pubkey: "e7622d60287398e37912";
+  --cfg-img-only: 1;
+  --cfg-multiple: 0;
+  --cfg-max-local-file-size-bytes: 10485760;
+  --cfg-multiple-max: 1;
+  --cfg-use-cloud-image-editor: 1;
+  --cfg-source-list: "local, url, camera, dropbox";
+  --darkmode: 0;
+  --h-accent: 223;
+  --s-accent: 100%;
+  --l-accent: 61%;
+}

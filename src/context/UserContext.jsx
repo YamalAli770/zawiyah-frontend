@@ -14,20 +14,21 @@ export const UserContextProvider = ({ children }) => {
     INITIAL_STATE);
 
     useEffect(() => {
-        if(state.user) {
-            const { username, accountType, accessToken } = state.user;
+        if(state.user && state.user._id) {
+            const { _id, username, accountType, accessToken } = state.user;
             const fetchedUser = {
+                id: _id,
                 username,
                 accessToken,
                 accountType
             }
             localStorage.setItem("user", JSON.stringify(fetchedUser)); 
         }
-    }, [state.user])
+    }, [state.user])    
 
     return (
         <UserContext.Provider value={{
-            user: state.user,
+            user: state.user && { id: state.user._id, ...state.user },
             isFetching: state.isFetching,
             error: state.error,
             dispatch

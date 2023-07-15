@@ -2,126 +2,162 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 import axios from "axios";
-import { loadStripe } from "@stripe/stripe-js";
-import { API_URL } from '../../config'
+// import { loadStripe } from "@stripe/stripe-js";
+import { API_URL, IMAGE_SETTING } from "../../config";
+import { toast } from "react-toastify";
 
 const Cart = ({ setIsCartOpen }) => {
   const { user } = useContext(UserContext);
   const [cart, setCart] = useState([]);
   const [cartProducts, setCartProducts] = useState([]);
   const [cartTotal, setCartTotal] = useState(0);
-
+  
   useEffect(() => {
     const getCart = async () => {
       try {
-        const response = await axios.get(
-          `${API_URL}api/user/${user.username}`,
-          {
-            headers: {
-              Authorization: "Bearer " + user.accessToken,
-            },
-          }
-        );
-        if (response.data) {
-          const cartResponse = await axios.get(
-            `${API_URL}api/cart/${response.data._id}`,
-            {
-              headers: {
-                Authorization: "Bearer " + user.accessToken,
-              },
-            }
-          );
-          if (cartResponse.data) {
-            setCart(cartResponse.data.cartItems);
-            const productIds = cartResponse.data.cartItems;
-            setCartTotal(cartResponse.data.cartTotal);
-
-            const allProducts = await axios.get(
-              `${API_URL}api/products`
-            );
-
-            const cartProducts = allProducts.data.filter((product) => {
-              return productIds.includes(product._id);
-            });
-            setCartProducts(cartProducts);
-          }
-        }
-      } catch (error) {
-        console.log(error.response.data.message);
-      }
-    };
-    getCart();
-  }, []);
-
-  const makePayment = async () => { 
-    const stripe = await loadStripe("pk_test_51NGz4VLy4KQTHDHQcyn2NVqBp4O92AdK4fBvqog5b1pRG8CCkVEThInJ7ol0DgqNBs9toTA2GvBWFlha3CaO15y000o83A6CTp"); 
- 
-    const response = await fetch(`${API_URL}api/create-checkout-session`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + user.accessToken,
-      },
-      body: JSON.stringify({
-        cartProducts,
-      }),
-    });
-
-    const session = await response.json(); 
-
-    const result = stripe.redirectToCheckout({ 
-      sessionId: session.id, 
-    }); 
- 
-    if (result.error) { 
-      console.log(result.error); 
-    } 
-    else {
-      console.log("Payment successful!");
-      const clearCartResponse = await axios.delete(
-        `${API_URL}api/cart/clear/${user.username}`,
-        {
+        const response = await axios.get(`${API_URL}api/cart/${user.id}`, {
           headers: {
             Authorization: "Bearer " + user.accessToken,
           },
-      });
-      console.log("Cart cleared!")
-      
-      if (clearCartResponse.data) {
-        console.log(clearCartResponse);
-        setCart([]);
-        setCartProducts([]);
-      }
-      try {
-        const createOrderResponse = await axios.post(
-          `${API_URL}api/order/create`,
-          {
-            orderProducts: cartProducts.map((product) => product._id),
-            orderTotal: cartTotal,
-            orderStatus: "pending", // Set the initial status as "pending"
-            orderPlacedBy: user.username,
-          },
-          {
+        });
+        if (response.data) {
+          setCart(response.data.cartItems);
+          setCartTotal(response.data.cartTotal);
+
+          const cartProductsResponse = await axios.get(`${API_URL}api/cart/products/${user.id}`, {
             headers: {
               Authorization: "Bearer " + user.accessToken,
-            },
+            }
+          });
+          if(cartProductsResponse.data) {
+            setCartProducts(cartProductsResponse.data);
           }
-        );
-
-        console.log(createOrderResponse.data);
-        // Do something with the created order data, such as displaying a success message or redirecting to an order confirmation page
+        }
       } catch (error) {
-        console.log(error.response.data.message);
-        // Handle any error that occurred during order creation
+        toast.info(error.response.data.message, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          progress: undefined,
+          theme: "light"
+        });
       }
     }
-  }; 
+
+    getCart();
+
+  }, []);
+  
+
+  const handleRemove = async (productId) => {
+    try {
+      const response = await axios.delete(`${API_URL}api/cart/remove`, {
+        headers: {
+          Authorization: "Bearer " + user.accessToken,
+        },
+        data: {
+          id: user.id,
+          productId
+        }
+       })
+      if (response.data) {
+        setCart(response.data.cartItems);
+        setCartTotal(response.data.cartTotal);
+
+        const cartProductsResponse = await axios.get(`${API_URL}api/cart/products/${user.id}`, {
+          headers: {
+            Authorization: "Bearer " + user.accessToken,
+          }
+        });
+        if(cartProductsResponse.data) {
+          setCartProducts(cartProductsResponse.data);
+        };
+      };
+
+    } catch (error) {
+      toast.info(error.response.data.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        progress: undefined,
+        theme: "light"
+      });
+    }
+  };
+
+  // const makePayment = async () => {
+  //   const stripe = await loadStripe("pk_test_51NGz4VLy4KQTHDHQcyn2NVqBp4O92AdK4fBvqog5b1pRG8CCkVEThInJ7ol0DgqNBs9toTA2GvBWFlha3CaO15y000o83A6CTp");
+
+  //   const response = await fetch(`${API_URL}api/create-checkout-session`, {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: "Bearer " + user.accessToken,
+  //     },
+  //     body: JSON.stringify({
+  //       cartProducts,
+  //     }),
+  //   });
+
+  //   const session = await response.json();
+
+  //   const result = stripe.redirectToCheckout({
+  //     sessionId: session.id,
+  //   });
+
+  //   if (result.error) {
+  //     console.log(result.error);
+  //   }
+  //   else {
+  //     console.log("Payment successful!");
+  //     const clearCartResponse = await axios.delete(
+  //       `${API_URL}api/cart/clear/${user.username}`,
+  //       {
+  //         headers: {
+  //           Authorization: "Bearer " + user.accessToken,
+  //         },
+  //     });
+  //     console.log("Cart cleared!")
+
+  //     if (clearCartResponse.data) {
+  //       console.log(clearCartResponse);
+  //       setCart([]);
+  //       setCartProducts([]);
+  //     }
+  //     try {
+  //       const createOrderResponse = await axios.post(
+  //         `${API_URL}api/order/create`,
+  //         {
+  //           orderProducts: cartProducts.map((product) => product._id),
+  //           orderTotal: cartTotal,
+  //           orderStatus: "pending", // Set the initial status as "pending"
+  //           orderPlacedBy: user.username,
+  //         },
+  //         {
+  //           headers: {
+  //             Authorization: "Bearer " + user.accessToken,
+  //           },
+  //         }
+  //       );
+
+  //       console.log(createOrderResponse.data);
+  //       // Do something with the created order data, such as displaying a success message or redirecting to an order confirmation page
+  //     } catch (error) {
+  //       console.log(error.response.data.message);
+  //       // Handle any error that occurred during order creation
+  //     }
+  //   }
+  // };
 
   const navigate = useNavigate();
 
   return (
     <>
-      {cart &&  (
+      {cart && (
         <div
           className="relative z-10"
           aria-labelledby="slide-over-title"
@@ -180,9 +216,7 @@ const Cart = ({ setIsCartOpen }) => {
                                   <li className="flex py-6" key={item._id}>
                                     <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                       <img
-                                        src={
-                                          `${API_URL}` + item.image
-                                        }
+                                        src={`${item.image}${IMAGE_SETTING}`}
                                         alt={item.name}
                                         className="h-full w-full object-cover object-center"
                                       />
@@ -206,12 +240,13 @@ const Cart = ({ setIsCartOpen }) => {
                                       </div>
                                       <div className="flex flex-1 items-end justify-between text-sm">
                                         <div className="flex">
-                                          {/* <button
+                                          <button
                                             type="button"
-                                            className="font-medium text-customButton hover:text-indigo-500"
+                                            className="font-medium text-customButton hover:brightness-50"
+                                            onClick={() => handleRemove(item._id)}
                                           >
                                             Remove
-                                          </button> */}
+                                          </button>
                                         </div>
                                       </div>
                                     </div>
@@ -239,7 +274,6 @@ const Cart = ({ setIsCartOpen }) => {
                       </p>
                       <div className="mt-6">
                         <button
-                          onClick={makePayment}
                           className="flex items-center justify-center rounded-md border border-transparent bg-customButton px-6 py-3 text-base font-medium text-white shadow-sm hover:brightness-50"
                         >
                           Checkout

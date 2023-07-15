@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import About from "./components/About"
 import Cart from "./components/Cart"
 import Contact from "./components/Contact"
@@ -16,7 +17,7 @@ import Shop from "./components/Shop"
 import Statistic from "./components/Statistic"
 import Success from "./components/Success"
 import Cancel from "./components/Cancel"
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import Error from "./components/Error"
 
 function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -45,6 +46,7 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/success" element={<Success />} />
             <Route path="/cancel" element={<Cancel />} />
+            <Route path="*" element={<Error />} />
           </Routes>
           <Footer />
         </BrowserRouter>

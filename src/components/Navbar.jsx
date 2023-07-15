@@ -95,11 +95,11 @@ const Navbar = ({ }) => {
                 className="cursor-pointer hover:brightness-50"
               />
             </Link>
-            <AiOutlineShoppingCart
+            { user && user.accountType.toLowerCase() === 'buyer' && <AiOutlineShoppingCart
               fontSize={25}
               onClick={() => setIsCartOpen(true)}
               className="cursor-pointer hover:brightness-50"
-            />
+            />}
           </div>
         )}
       </div>

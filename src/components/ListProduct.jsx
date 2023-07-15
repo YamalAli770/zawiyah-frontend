@@ -4,9 +4,12 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../config";
+import { uploadFile } from '@uploadcare/upload-client'
+import { Triangle } from "react-loader-spinner";
 
 const ListProduct = () => {
   const { user } = useContext(UserContext);
+  const [imageUploading, setImageUploading] = useState(false);
   const navigate = useNavigate();
   const [productData, setProductData] = useState({
     brand: "",
@@ -28,10 +31,38 @@ const ListProduct = () => {
     }));
   };
 
-  const handleImageChange = (event) => {
+  const handleImageChange = async (event) => {
     const file = event.target.files[0];
-    setImage(file);
-    console.log(file);
+    if(file.size > 1024 * 1024 * 10) {
+      toast.error("Image size should be less than 10MB", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        progress: undefined,
+        theme: "light"
+      });
+      return;
+    };
+    if(file.type !== 'image/jpeg' && file.type !== 'image/png') {
+      toast.error("Image format is incorrect. Only JPG and PNG are allowed", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        progress: undefined,
+        theme: "light"
+      });
+      return;
+    };
+    setImageUploading(true);
+    const result = await uploadFile(file, { publicKey: 'e7622d60287398e37912', store: 'auto' })
+    if(result) {
+      setImage(result.cdnUrl);
+      setImageUploading(false);
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -65,7 +96,6 @@ const ListProduct = () => {
           progress: undefined,
           theme: "light"
         });
-        console.log("Product created:", response.data);
       }
 
       // Reset the form after successful login
@@ -245,6 +275,7 @@ const ListProduct = () => {
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
                 />
               </div>
+              <span className="text-red-600 text-xs">Only JPG, JPEG and PNG Supported (Max Size: 10MB)</span>
             </div>
             <div className="flex mt-5 items-end">
               {/* Price */}
@@ -272,11 +303,20 @@ const ListProduct = () => {
               </button>
             </div>
           </form>
-          { image && <img
+          { !imageUploading ? image && <img
             alt="ecommerce"
             className="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded"
-            src={URL.createObjectURL(image)}
-          />}
+            src={image + '-/quality/smart/-/format/auto/'}
+          /> : <div className="flex justify-center items-center text-center w-6/12">
+                <Triangle
+                  height={150}
+                  width={150}
+                  color="lightblue"
+                  ariaLabel="triangle-loading"
+                  wrapperStyle={{}}
+                  visible={true}
+                />
+        </div>}
         </div>
       </div>
     </section>

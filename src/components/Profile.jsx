@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { API_URL } from "../../config";
+import { API_URL, IMAGE_SETTING } from "../../config";
 
 const Profile = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -136,7 +136,7 @@ const Profile = () => {
             {userBidProducts.map((product) => (
               <Link key={product._id} to={`/shop/${product._id}`} className="w-72">
                 <img
-                  src={`${API_URL}${product.image}`}
+                  src={`${product.image}${IMAGE_SETTING}`}
                   className="rounded-t-lg h-48 w-full object-cover"
                   alt=""
                 />
