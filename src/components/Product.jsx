@@ -26,7 +26,6 @@ const Product = () => {
       try {
         const response = await axios.get(`${API_URL}api/products/${id}`);
         if (response.data) {
-          console.log(response.data);
           setProduct(response.data);
           startTimer(response.data.createdAt);
         }
@@ -53,7 +52,6 @@ const Product = () => {
         }
       });
       if (response.data) {
-        console.log(response.data);
         setHighestBid(response.data);
       }
     } catch (error) {
@@ -135,6 +133,18 @@ const Product = () => {
     }, 1000);
   };
 
+  const addItemToCart = async () => {
+    const response = await axios.post(`${API_URL}api/cart/add`, { id: user.id, productId: product._id }, {
+      headers: {
+        Authorization: 'Bearer ' + user.accessToken
+      },
+    });
+
+    if(response.data) {
+      console.log(response.data);
+    }
+  };
+
   const [openModal, setOpenModal] = useState(false);
   return (
     <>
@@ -180,7 +190,7 @@ const Product = () => {
                 )}
                 { product?.finalPrice && user?.id === highestBid?.bidBy && <button
                     className="flex ml-auto text-white bg-customButton border-0 py-2 px-6 focus:outline-none hover:brightness-50 rounded"
-                  >
+                  onClick={addItemToCart} >
                     Add To Cart
                   </button>}
                 <button className="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4">
