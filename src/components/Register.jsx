@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { API_URL } from "../../config";
+import { API_URL, TOAST_CONFIG } from "../../config";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -33,15 +33,7 @@ const Register = () => {
 
       console.log(response.data); // Handle the response data as needed
 
-      toast.success('Account Registered Successfully', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        progress: undefined,
-        theme: "light",
-      });
+      toast.success('Account Registered Successfully', TOAST_CONFIG);
 
       // Reset the form after successful registration
       setFormData({
@@ -53,24 +45,15 @@ const Register = () => {
 
       navigate("/login");
     } catch (error) {
-        toast.error(error.response.data.message, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          });
+        toast.error(error.response.data.message, TOAST_CONFIG);
       console.error(error.response.data.message); // Handle any error occurred during registration
     }
   };
   return (
-    <>
+    <div className="text-customText">
       <div className="h-screen flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+          <h2 className="mt-10 text-customHeading text-2xl font-bold leading-9 tracking-tight">
             Register your account
           </h2>
         </div>
@@ -80,7 +63,7 @@ const Register = () => {
             <div>
               <label
                 htmlFor="username"
-                className="block text-sm font-medium leading-6 text-gray-900"
+                className="block text-sm font-medium leading-6"
               >
                 Username
               </label>
@@ -93,7 +76,7 @@ const Register = () => {
                   required
                   value={username}
                   onChange={handleChange}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
+                  className="block w-full rounded-md border-0 py-1.5 text-black shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
                 />
               </div>
             </div>
@@ -101,7 +84,7 @@ const Register = () => {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium leading-6 text-gray-900"
+                className="block text-sm font-medium leading-6"
               >
                 Email address
               </label>
@@ -114,7 +97,7 @@ const Register = () => {
                   required
                   value={email}
                   onChange={handleChange}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
+                  className="block w-full rounded-md border-0 py-1.5 text-black shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
                 />
               </div>
             </div>
@@ -123,7 +106,7 @@ const Register = () => {
               <div className="flex items-center justify-between">
                 <label
                   htmlFor="password"
-                  className="block text-sm font-medium leading-6 text-gray-900"
+                  className="block text-sm font-medium leading-6"
                 >
                   Password
                 </label>
@@ -137,7 +120,7 @@ const Register = () => {
                   required
                   value={password}
                   onChange={handleChange}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
+                  className="block w-full rounded-md border-0 py-1.5 text-black shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
                 />
               </div>
             </div>
@@ -148,7 +131,7 @@ const Register = () => {
               <div className="flex items-center justify-between">
                 <label
                   htmlFor="accType"
-                  className="block text-sm font-medium leading-6 text-gray-900"
+                  className="block text-sm font-medium leading-6"
                 >
                   Account Type
                 </label>
@@ -163,7 +146,7 @@ const Register = () => {
                   value={accType}
                   onChange={handleChange}
                   defaultValue=""
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
                 >
                   <option value="" disabled>Select Your Option</option>
                   <option value="Seller">Seller</option>
@@ -172,28 +155,28 @@ const Register = () => {
               </div>
             </div>
 
-            <div>
+            <div className="border-t-4 pt-5">
               <button
                 type="submit"
-                className="flex w-full justify-center rounded-md bg-customButton px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:brightness-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                className="flex w-full justify-center rounded-md bg-customButtonBg px-3 py-1.5 text-lg font-semibold leading-6 text-customButtonText shadow-sm hover:brightness-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
                 Sign up
               </button>
             </div>
           </form>
 
-          <p className="mt-10 text-center text-sm text-gray-500">
+          <p className="mt-10 text-center text-sm">
             Already a member?
             <Link
               to="/login"
-              className="ml-1 font-semibold leading-6 text-customButton hover:brightness-50"
+              className="ml-1 font-semibold leading-6 text-customLink hover:brightness-150"
             >
               Login Now
             </Link>
           </p>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

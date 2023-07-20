@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { UserContext } from "../context/UserContext";
-import { API_URL, IMAGE_SETTING } from "../../config";
+import { API_URL, IMAGE_SETTING, TOAST_CONFIG } from "../../config";
 import { Triangle } from "react-loader-spinner";
 import io from "socket.io-client";
 
@@ -26,19 +26,12 @@ const Product = () => {
       try {
         const response = await axios.get(`${API_URL}api/products/${id}`);
         if (response.data) {
+          console.log(response.data)
           setProduct(response.data);
           startTimer(response.data.createdAt);
         }
       } catch (error) {
-        toast.error(error.response.data.message, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          progress: undefined,
-          theme: "light",
-        });
+        toast.error(error.response.data.message, TOAST_CONFIG);
       }
     };
     fetchProduct();
@@ -55,15 +48,7 @@ const Product = () => {
         setHighestBid(response.data);
       }
     } catch (error) {
-      toast.info(error.response.data.message, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        progress: undefined,
-        theme: "light",
-      });
+      toast.info(error.response.data.message, TOAST_CONFIG);
     }
   };
 
@@ -76,28 +61,12 @@ const Product = () => {
   useEffect(() => {
     const socket = io(API_URL);
 
-    socket.on("connect", () => {
-      console.log(socket.connected);
-    });
-
-    socket.on("hello", (message) => {
-      console.log(message.message);
-    })
-
     socket.on("newBid", (data) => {
-      product && toast.success(`New bid of $${data.bid.bidAmount} on ${product.name}`, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        progress: undefined,
-        theme: "light",
-      });
+      product && toast.success(`New bid of $${data.bid.bidAmount} on ${product.name}`, TOAST_CONFIG);
       setProduct((prevProduct) => {
         return {
           ...prevProduct,
-          currentPrice: data.bid.bidAmount,
+          price: data.bid.bidAmount,
         };
       });
     });
@@ -134,62 +103,66 @@ const Product = () => {
   };
 
   const addItemToCart = async () => {
-    const response = await axios.post(`${API_URL}api/cart/add`, { id: user.id, productId: product._id }, {
-      headers: {
-        Authorization: 'Bearer ' + user.accessToken
-      },
-    });
-
-    if(response.data) {
-      console.log(response.data);
+    try {
+      const response = await axios.post(`${API_URL}api/cart/add`, { id: user.id, productId: product._id }, {
+        headers: {
+          Authorization: 'Bearer ' + user.accessToken
+        },
+      });
+      if (response.data) {
+        toast.success("Item added to cart successfully", TOAST_CONFIG);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message, TOAST_CONFIG);
     }
   };
 
   const [openModal, setOpenModal] = useState(false);
   return (
     <>
-      {loading ? <div className="flex justify-center items-center text-center"><Triangle height={565} width={300} color="lightblue" ariaLabel="triangle-loading" wrapperStyle={{}} visible={true} /></div> : <section className="text-gray-600 body-font overflow-hidden">
+      {loading ? <div className="flex justify-center items-center text-center"><Triangle height={569} width={300} color="white" ariaLabel="triangle-loading" wrapperStyle={{}} visible={true} /></div> : <section className="text-customText body-font overflow-hidden">
         <div className="container px-5 py-24 mx-auto">
           <div className="lg:w-4/5 mx-auto flex flex-wrap">
             <div className="lg:w-1/2 w-full lg:pr-10 lg:py-6 mb-6 lg:mb-0">
-              <h2 className="text-sm title-font text-gray-500 tracking-widest">
+              <h2 className="text-sm title-font tracking-widest">
                 {product.category}
               </h2>
-              <h1 className="text-gray-900 text-3xl title-font font-medium mb-4">
+              <h1 className="text-customHeading text-3xl title-font font-medium mb-4">
                 {product.name}
               </h1>
               <div className="flex mb-4 w-10">
-                <a className="flex-grow text-customButton border-b-2 border-customButton py-2 text-lg px-1">
+                <a className="flex-grow border-b-2 border-customButton py-2 text-lg px-1">
                   Description
                 </a>
               </div>
               <p className="leading-relaxed mb-4">{product.description}</p>
               {product.color && (
-                <div className="flex border-t border-gray-200 py-2">
-                  <span className="text-gray-500">Color</span>
-                  <span className="ml-auto text-gray-900">{product.color}</span>
+                <div className="flex border-t border-white-200 py-2">
+                  <span className="">Color</span>
+                  <span className="ml-auto">{product.color}</span>
                 </div>
               )}
               {product.size && (
-                <div className="flex border-t border-gray-200 py-2">
-                  <span className="text-gray-500">Size</span>
-                  <span className="ml-auto text-gray-900">{product.size}</span>
+                <div className="flex border-t border-white-200 py-2">
+                  <span className="">Size</span>
+                  <span className="ml-auto">{product.size}</span>
                 </div>
               )}
-              <div className="flex mt-8">
-                <span className="title-font font-medium text-2xl text-gray-900">
-                  ${product.currentPrice}
+              <div className="flex mt-8 justify-between">
+                <span className="title-font font-medium text-2xl">
+                  ${product.price}
                 </span>
                 {user && user.accountType.toLowerCase() === 'buyer' && !product.finalPrice && (
                   <button
-                    className="flex ml-auto text-white bg-customButton border-0 py-2 px-6 focus:outline-none hover:brightness-50 rounded"
+                    className="flex ml-auto text-customButtonText bg-customButtonBg border-0 py-2 px-6 focus:outline-none hover:brightness-50 rounded"
                     onClick={() => setOpenModal(true)}
                   >
                     Bid Now
                   </button>
                 )}
                 { product?.finalPrice && user?.id === highestBid?.bidBy && <button
-                    className="flex ml-auto text-white bg-customButton border-0 py-2 px-6 focus:outline-none hover:brightness-50 rounded"
+                    className="flex ml-auto text-customButtonText bg-customButtonBg border-0 py-2 px-6 focus:outline-none hover:brightness-50 rounded"
                   onClick={addItemToCart} >
                     Add To Cart
                   </button>}
@@ -221,7 +194,7 @@ const Product = () => {
           <Modal
             user={user}
             id={id}
-            currentPrice={product.currentPrice}
+            currentPrice={product.price}
             setOpenModal={setOpenModal}
           />
         )}

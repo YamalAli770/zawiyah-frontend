@@ -2,10 +2,10 @@ import React from "react";
 
 const Team = () => {
   return (
-    <section className="text-gray-600 body-font mx-auto">
+    <section className="text-customText body-font mx-auto">
       <div className="container px-5 mb-5 mx-auto">
         <div className="flex flex-col text-center w-full mb-20">
-          <h1 className="text-2xl font-medium title-font mb-4 text-gray-900">
+          <h1 className="text-2xl font-medium title-font mb-4 text-customHeading">
             OUR TEAM
           </h1>
           <p className="lg:w-2/3 mx-auto leading-relaxed text-base">
@@ -23,7 +23,7 @@ const Team = () => {
                 src="https://images.unsplash.com/photo-1512484776495-a09d92e87c3b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjN8fG1hbGUlMjBwb3J0cmFpdHN8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=600&q=60"
               />
               <div className="w-full">
-                <h2 className="title-font font-medium text-lg text-gray-900">
+                <h2 className="title-font font-medium text-lg text-customHeading">
                   Osama Nasim
                 </h2>
                 <h3 className="text-gray-500 mb-3">Backend Engineer</h3>
@@ -79,7 +79,7 @@ const Team = () => {
                 src="https://images.unsplash.com/photo-1524854859347-bd2f42367134?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTA3fHxtYWxlJTIwcG9ydHJhaXRzfGVufDB8fDB8fHww&auto=format&fit=crop&w=600&q=60"
               />
               <div className="w-full">
-                <h2 className="title-font font-medium text-lg text-gray-900">
+                <h2 className="title-font font-medium text-lg text-customHeading">
                   Yamal Ali
                 </h2>
                 <h3 className="text-gray-500 mb-3">Frontend Engineer</h3>
@@ -135,7 +135,7 @@ const Team = () => {
                 src="https://images.unsplash.com/flagged/photo-1595514191830-3e96a518989b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzV8fG1hbGUlMjBwb3J0cmFpdHN8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=600&q=60"
               />
               <div className="w-full">
-                <h2 className="title-font font-medium text-lg text-gray-900">
+                <h2 className="title-font font-medium text-lg text-customHeading">
                   Muhammad Omer Siddiqui
                 </h2>
                 <h3 className="text-gray-500 mb-3">Database Engineer</h3>

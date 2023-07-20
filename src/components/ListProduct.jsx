@@ -3,7 +3,7 @@ import { UserContext } from "../context/UserContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { API_URL } from "../../config";
+import { API_URL, TOAST_CONFIG, TRIANGLE_LOADER_CONFIG } from "../../config";
 import { uploadFile } from '@uploadcare/upload-client'
 import { Triangle } from "react-loader-spinner";
 
@@ -34,27 +34,11 @@ const ListProduct = () => {
   const handleImageChange = async (event) => {
     const file = event.target.files[0];
     if(file.size > 1024 * 1024 * 10) {
-      toast.error("Image size should be less than 10MB", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        progress: undefined,
-        theme: "light"
-      });
+      toast.error("Image size should be less than 10MB", TOAST_CONFIG);
       return;
     };
     if(file.type !== 'image/jpeg' && file.type !== 'image/png') {
-      toast.error("Image format is incorrect. Only JPG and PNG are allowed", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        progress: undefined,
-        theme: "light"
-      });
+      toast.error("Image format is incorrect. Only JPG and PNG are allowed", TOAST_CONFIG);
       return;
     };
     setImageUploading(true);
@@ -87,15 +71,7 @@ const ListProduct = () => {
         },
       });
       if(response.data) {
-        toast.success("Product created successfully", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          progress: undefined,
-          theme: "light"
-        });
+        toast.success("Product created successfully", TOAST_CONFIG);
       }
 
       // Reset the form after successful login
@@ -113,20 +89,12 @@ const ListProduct = () => {
       navigate("/shop");
 
     } catch (error) {
-      toast.error(error.response.data.message, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        progress: undefined,
-        theme: "light"
-      });
+      toast.error(error.response.data.message, TOAST_CONFIG);
     }
   };
 
   return (
-    <section className="text-gray-600 body-font overflow-hidden">
+    <section className="text-customText body-font overflow-hidden">
       <div className="container px-5 py-24 mx-auto">
         <div className="lg:w-4/5 mx-auto flex flex-wrap">
           <form onSubmit={handleSubmit} className="lg:w-1/2 w-full lg:pr-10 lg:py-6 mb-6 lg:mb-0">
@@ -134,7 +102,7 @@ const ListProduct = () => {
             <div>
               <label
                 htmlFor="brand"
-                className="block text-sm font-medium leading-6 text-gray-900"
+                className="block text-sm font-medium leading-6"
               >
                 Brand
               </label>
@@ -147,7 +115,7 @@ const ListProduct = () => {
                   required
                   value={productData.brand}
                   onChange={handleInputChange}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
                 />
               </div>
             </div>
@@ -155,7 +123,7 @@ const ListProduct = () => {
             <div className="mt-2 mb-2">
               <label
                 htmlFor="name"
-                className="block text-sm font-medium leading-6 text-gray-900"
+                className="block text-sm font-medium leading-6"
               >
                 Name
               </label>
@@ -168,7 +136,7 @@ const ListProduct = () => {
                   required
                   value={productData.name}
                   onChange={handleInputChange}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
                 />
               </div>
             </div>
@@ -176,7 +144,7 @@ const ListProduct = () => {
             <div className="inline">
               <label
                 htmlFor="category"
-                className="block text-sm font-medium leading-6 text-gray-900"
+                className="block text-sm font-medium leading-6"
               >
                 Category
               </label>
@@ -189,7 +157,7 @@ const ListProduct = () => {
                   required
                   value={productData.category}
                   onChange={handleInputChange}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
                 />
               </div>
             </div>
@@ -197,7 +165,7 @@ const ListProduct = () => {
             <div className="inline">
               <label
                 htmlFor="description"
-                className="block text-sm font-medium leading-6 text-gray-900"
+                className="block text-sm font-medium leading-6"
               >
                 Description
               </label>
@@ -211,7 +179,7 @@ const ListProduct = () => {
                   required
                   value={productData.description}
                   onChange={handleInputChange}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
                 />
               </div>
             </div>
@@ -219,7 +187,7 @@ const ListProduct = () => {
             <div className="mt-2 mb-2">
               <label
                 htmlFor="color"
-                className="block text-sm font-medium leading-6 text-gray-900"
+                className="block text-sm font-medium leading-6"
               >
                 Color
               </label>
@@ -231,7 +199,7 @@ const ListProduct = () => {
                   autoComplete="color"
                   value={productData.color}
                   onChange={handleInputChange}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
                 />
               </div>
             </div>
@@ -239,7 +207,7 @@ const ListProduct = () => {
             <div>
               <label
                 htmlFor="size"
-                className="block text-sm font-medium leading-6 text-gray-900"
+                className="block text-sm font-medium leading-6"
               >
                 Size
               </label>
@@ -251,7 +219,7 @@ const ListProduct = () => {
                   autoComplete="size"
                   value={productData.size}
                   onChange={handleInputChange}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
                 />
               </div>
             </div>
@@ -259,7 +227,7 @@ const ListProduct = () => {
             <div className="mt-2">
               <label
                 htmlFor="image"
-                className="block text-sm font-medium leading-6 text-gray-900"
+                className="block text-sm font-medium leading-6"
               >
                 Image
               </label>
@@ -272,7 +240,7 @@ const ListProduct = () => {
                   required
                   value={productData.image}
                   onChange={handleImageChange}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
                 />
               </div>
               <span className="text-red-600 text-xs">Only JPG, JPEG and PNG Supported (Max Size: 10MB)</span>
@@ -282,7 +250,7 @@ const ListProduct = () => {
               <div>
                 <label
                   htmlFor="price"
-                  className="block text-sm font-medium leading-6 text-gray-900 mb-1"
+                  className="block text-sm font-medium leading-6 mb-1"
                 >
                   Price
                 </label>
@@ -294,11 +262,11 @@ const ListProduct = () => {
                   required
                   value={productData.price}
                   onChange={handleInputChange}
-                  className="block rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-
+                  className="block rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-
                 indigo-600 sm:text-sm sm:leading-6 p-2"
                 />
               </div>
-              <button type="submit" className="flex ml-auto text-white bg-customButton border-0 py-2 px-6 focus:outline-none hover:brightness-50 rounded h-max">
+              <button type="submit" className="flex ml-auto text-customButtonText bg-customButtonBg border-0 py-2 px-6 focus:outline-none hover:brightness-50 rounded h-max">
                 List Now
               </button>
             </div>
@@ -308,14 +276,7 @@ const ListProduct = () => {
             className="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded"
             src={image + '-/quality/smart/-/format/auto/'}
           /> : <div className="flex justify-center items-center text-center w-6/12">
-                <Triangle
-                  height={150}
-                  width={150}
-                  color="lightblue"
-                  ariaLabel="triangle-loading"
-                  wrapperStyle={{}}
-                  visible={true}
-                />
+          <Triangle {...TRIANGLE_LOADER_CONFIG} width={150} height={150} />
         </div>}
         </div>
       </div>

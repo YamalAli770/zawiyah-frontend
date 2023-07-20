@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Triangle } from "react-loader-spinner";
-import { API_URL, IMAGE_SETTING } from "../../config";
+import { API_URL, IMAGE_SETTING, TOAST_CONFIG, TRIANGLE_LOADER_CONFIG } from "../../config";
 
 const Shop = () => {
   const [products, setProducts] = useState([]);
@@ -23,15 +23,7 @@ const Shop = () => {
         }
       } catch (error) {
         console.log(error.message);
-        toast.error(error.message, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          progress: undefined,
-          theme: "light",
-        });
+        toast.error(error.message, TOAST_CONFIG);
         navigate("/error");
       }
     };
@@ -43,17 +35,10 @@ const Shop = () => {
     <>
       {loading ? (
         <div className="flex justify-center items-center text-center">
-          <Triangle
-            height={565}
-            width={300}
-            color="lightblue"
-            ariaLabel="triangle-loading"
-            wrapperStyle={{}}
-            visible={true}
-          />
+          <Triangle {...TRIANGLE_LOADER_CONFIG} />
         </div>
       ) : (
-        <section className="text-gray-600 body-font">
+        <section className="text-customText body-font">
           <div className="container px-5 py-24 mx-auto">
             <div className="flex flex-wrap -m-4">
               {products.map((product) => {
@@ -83,13 +68,13 @@ const Shop = () => {
                       />
                     </div>
                     <div className="mt-4">
-                      <h3 className="text-gray-500 text-xs tracking-widest title-font mb-1">
+                      <h3 className="text-customText text-xs tracking-widest title-font mb-1">
                         {product.category.toUpperCase()}
                       </h3>
-                      <h2 className="text-gray-900 title-font text-lg font-medium">
+                      <h2 className="text-customHeading title-font text-lg font-medium">
                         {product.name}
                       </h2>
-                      <p className="mt-1">${product.currentPrice}</p>
+                      <p className="mt-1">${product.price}</p>
                     </div>
                   </Link>
                 );

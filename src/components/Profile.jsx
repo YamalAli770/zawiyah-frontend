@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { API_URL, IMAGE_SETTING } from "../../config";
+import { API_URL, IMAGE_SETTING, TOAST_CONFIG } from "../../config";
 
 const Profile = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -22,7 +22,7 @@ const Profile = () => {
         );
         setUserBidProducts(userBidProducts);
       } catch (error) {
-        toast.error("Failed to fetch data");
+        toast.error("Failed to fetch data", TOAST_CONFIG);
       }
     };
 

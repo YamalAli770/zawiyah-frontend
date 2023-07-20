@@ -2,10 +2,10 @@ import React from 'react'
 
 const Gallery = () => {
   return (
-    <section className="text-gray-600 body-font">
+    <section className="text-customText body-font">
   <div className="container px-5 py-24 mx-auto flex flex-wrap">
     <div className="flex w-full mb-20 flex-wrap">
-      <h1 className="sm:text-3xl text-2xl font-medium title-font text-gray-900 lg:w-1/3 lg:mb-0 mb-4">The Art of Handmade: A Gallery of Wonders</h1>
+      <h1 className="sm:text-3xl text-2xl text-customHeading font-medium title-font lg:w-1/3 lg:mb-0 mb-4">The Art of Handmade: A Gallery of Wonders</h1>
       <p className="lg:pl-6 lg:w-2/3 mx-auto leading-relaxed text-base">Our gallery is a curated collection of stunning, one-of-a-kind handmade crafts from around the world. Discover the beauty of textiles, jewelry, pottery, woodwork, and more. Each piece is a testament to the skill and creativity of the talented artisans who made them. Immerse yourself in a world of intricate designs, bold colors, and unique textures, and experience the wonder of handmade artistry. Join us in celebrating the art of handmade and discover the perfect piece to add to your collection.</p>
     </div>
     <div className="flex flex-wrap md:-m-2 -m-1">

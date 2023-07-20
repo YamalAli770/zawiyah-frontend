@@ -5,7 +5,7 @@ import { UserContext } from "../context/UserContext";
 import { toast } from "react-toastify";
 import axios from "axios";
 import Cart from "./Cart";
-import { API_URL } from "../../config";
+import { API_URL, TOAST_CONFIG } from "../../config";
 
 const Navbar = ({ }) => {
   const navigate = useNavigate();
@@ -18,61 +18,45 @@ const Navbar = ({ }) => {
           dispatch({ type: 'LOGOUT_USER' });
           localStorage.clear();
           navigate('/');
-          toast.success("User Successfully Logged Out", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            progress: undefined,
-            theme: "light"
-          });
+          toast.success("User Successfully Logged Out", TOAST_CONFIG);
       }
   } catch (error) {
-      toast.error("Cannot Logout User", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        progress: undefined,
-        theme: "light"
-      });
+      toast.error("Cannot Logout User", TOAST_CONFIG);
   }
   };
   return (
-    <header className="text-gray-600 body-font">
+    <header className="text-customLink body-font">
       <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
         <div className="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
-          <Link to="/" className="ml-3 text-2xl text-customButton italic">
+          <Link to="/" className="ml-3 text-2xl text-customHeading italic">
             Zawiyah
           </Link>
           {/* <img src="https://i.ibb.co/4SjWQmt/Zawiyah-Logo.png" alt="" className="w-20" /> */}
         </div>
         <nav className="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
-          <Link to="/" className="mr-5 hover:text-gray-900">
+          <Link to="/" className="mr-5 hover:brightness-150">
             Home
           </Link>
-          <Link to="/about" className="mr-5 hover:text-gray-900">
+          <Link to="/about" className="mr-5 hover:brightness-150">
             About Us
           </Link>
-          <Link to="/shop" className="mr-5 hover:text-gray-900">
+          <Link to="/shop" className="mr-5 hover:brightness-150">
             Shop
           </Link>
-          <Link to="/contact" className="mr-5 hover:text-gray-900">
+          <Link to="/contact" className="mr-5 hover:brightness-150">
             Contact
           </Link>
-          { user && user.accountType.toLowerCase() === "seller" && <Link to="/new" className="mr-5 hover:text-gray-900">
+          { user && user.accountType.toLowerCase() === "seller" && <Link to="/new" className="mr-5 hover:brightness-150">
             List Product
           </Link>}
-          { user && <button onClick={handleLogout} className="mr-5 hover:text-gray-900">
+          { user && <button onClick={handleLogout} className="mr-5 hover:brightness-150">
             Logout
           </button>}
         </nav>
         { !user ? (
           <Link
             to="/login"
-            className="inline-flex items-center bg-customButton border-0 py-1 px-3 focus:outline-none hover:brightness-50 rounded text-white mt-4 md:mt-0"
+            className="inline-flex items-center bg-customButtonBg border-0 py-1 px-3 focus:outline-none hover:brightness-50 rounded text-customButtonText mt-4 md:mt-0"
           >
             Sign In
             <svg
@@ -92,14 +76,21 @@ const Navbar = ({ }) => {
             <Link to="/profile">
               <AiOutlineUser
                 fontSize={25}
-                className="cursor-pointer hover:brightness-50"
+                className="cursor-pointer hover:brightness-150"
               />
             </Link>
-            { user && user.accountType.toLowerCase() === 'buyer' && <AiOutlineShoppingCart
-              fontSize={25}
-              onClick={() => setIsCartOpen(true)}
-              className="cursor-pointer hover:brightness-50"
-            />}
+            {user && user.accountType.toLowerCase() === 'buyer' && (
+            <div className="relative">
+              <AiOutlineShoppingCart
+                fontSize={25}
+                onClick={() => setIsCartOpen(true)}
+                className="cursor-pointer hover:brightness-150"
+              />
+              <span className="absolute -top-2 -right-2 bg-customText text-white rounded-full w-4 h-4 flex items-center justify-center text-xs">
+              1
+              </span>
+            </div>
+          )}
           </div>
         )}
       </div>

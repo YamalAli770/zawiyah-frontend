@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { API_URL } from "../../config";
+import { API_URL, TOAST_CONFIG } from "../../config";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -34,15 +34,7 @@ const Login = () => {
         dispatch({ type: "LOGIN_SUCCESS", payload: response.data });
       }
 
-      toast.success("Logged in successfully", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        progress: undefined,
-        theme: "light"
-      });
+      toast.success("Logged in successfully", TOAST_CONFIG);
 
       // Reset the form after successful login
       setFormData({
@@ -55,102 +47,93 @@ const Login = () => {
     } catch (error) {
       console.log(error)
       dispatch({ type: "LOGIN_FAILURE" });
-      toast.error(error.response.data.message, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light"
-      });
-
-      console.error(error.response.data.message); // Handle any error occurred during login
+      toast.error(error.response.data.message, TOAST_CONFIG);
     }
   };
 
   return (
-    <div className="h-screen flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-          Sign in to your account
-        </h2>
-      </div>
+    <div className="text-customText">
+      <div className="h-screen flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+          <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-customHeading">
+            Sign in to your account
+          </h2>
+        </div>
 
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium leading-6 text-gray-900"
-            >
-              Email address
-            </label>
-            <div className="mt-2">
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={email}
-                onChange={handleChange}
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
-              />
-            </div>
-          </div>
-
-          <div>
-            <div className="flex items-center justify-between">
+        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div>
               <label
-                htmlFor="password"
-                className="block text-sm font-medium leading-6 text-gray-900"
+                htmlFor="email"
+                className="block text-sm font-medium leading-6"
               >
-                Password
+                Email address
               </label>
-              <div className="text-sm">
-                <a
-                  href="#"
-                  className="font-semibold text-customButton hover:brightness-50"
-                >
-                  Forgot password?
-                </a>
+              <div className="mt-2">
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={email}
+                  onChange={handleChange}
+                  className="block w-full rounded-md border-0 py-1.5 text-black shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
+                />
               </div>
             </div>
-            <div className="mt-2">
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                value={password}
-                onChange={handleChange}
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
-              />
+
+            <div>
+              <div className="flex items-center justify-between">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium leading-6 "
+                >
+                  Password
+                </label>
+                <div className="text-sm">
+                  <a
+                    href="#"
+                    className="font-semibold text-customLink hover:brightness-150"
+                  >
+                    Forgot password?
+                  </a>
+                </div>
+              </div>
+              <div className="mt-2">
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                  value={password}
+                  onChange={handleChange}
+                  className="block w-full rounded-md border-0 py-1.5 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
+                />
+              </div>
             </div>
-          </div>
 
-          <div>
-            <button
-              type="submit"
-              className="flex w-full justify-center rounded-md bg-customButton px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:brightness-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            <div className="border-t-4 pt-5">
+              <button
+                type="submit"
+                className="flex w-full justify-center rounded-md bg-customButtonBg text-customButtonText px-3 py-1.5 text-lg font-semibold leading-6 shadow-sm hover:brightness-50 focus-visible:outline 6focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              >
+                Sign in
+              </button>
+            </div>
+          </form>
+
+          <p className="mt-10 text-center text-sm">
+            Not a member?
+            <Link
+              to="/register"
+              className="ml-1 font-semibold leading-6 hover:brightness-150 text-customLink"
             >
-              Sign in
-            </button>
-          </div>
-        </form>
-
-        <p className="mt-10 text-center text-sm text-gray-500">
-          Not a member?
-          <Link
-            to="/register"
-            className="ml-1 font-semibold leading-6 text-customButton hover:brightness-50"
-          >
-            Register Now
-          </Link>
-        </p>
+              Register Now
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

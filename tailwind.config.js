@@ -10,8 +10,12 @@ export default {
         "custom": "90rem"
       },
       colors: {
-        "customBg": "#E3FDFD",
-        "customButton": "#37868B"
+        "customBg": "black",
+        "customHeading": "white",
+        "customText": "#9898A0",
+        "customButtonText": "black",
+        "customButtonBg": "white",
+        "customLink": "#757577",
       }
     },
   },

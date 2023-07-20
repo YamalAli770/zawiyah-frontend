@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 import axios from "axios";
 // import { loadStripe } from "@stripe/stripe-js";
-import { API_URL, IMAGE_SETTING } from "../../config";
+import { API_URL, IMAGE_SETTING, TOAST_CONFIG } from "../../config";
 import { toast } from "react-toastify";
 
 const Cart = ({ setIsCartOpen }) => {
@@ -34,15 +34,7 @@ const Cart = ({ setIsCartOpen }) => {
           }
         }
       } catch (error) {
-        toast.info(error.response.data.message, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          progress: undefined,
-          theme: "light"
-        });
+        toast.info(error.response.data.message, TOAST_CONFIG);
       }
     }
 
@@ -77,15 +69,7 @@ const Cart = ({ setIsCartOpen }) => {
       };
 
     } catch (error) {
-      toast.info(error.response.data.message, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        progress: undefined,
-        theme: "light"
-      });
+      toast.info(error.response.data.message, TOAST_CONFIG);
     }
   };
 
