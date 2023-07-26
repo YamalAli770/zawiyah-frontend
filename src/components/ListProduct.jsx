@@ -1,14 +1,14 @@
-import React, { useContext, useState } from "react";
-import { UserContext } from "../context/UserContext";
+import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { API_URL, TOAST_CONFIG, TRIANGLE_LOADER_CONFIG } from "../../config";
 import { uploadFile } from '@uploadcare/upload-client'
 import { Triangle } from "react-loader-spinner";
+import { useStore } from '../store';
 
 const ListProduct = () => {
-  const { user } = useContext(UserContext);
+  const user = useStore((state) => state.user);
   const [imageUploading, setImageUploading] = useState(false);
   const navigate = useNavigate();
   const [productData, setProductData] = useState({
@@ -62,9 +62,9 @@ const ListProduct = () => {
     formData.append("initialPrice", productData.price);
     formData.append("image", image);
 
-    console.log(formData);
 
     try {
+      console.log(user)
       const response = await axios.post(`${API_URL}api/products/create`, formData, {
         headers: {
           Authorization: 'Bearer ' + user.accessToken,

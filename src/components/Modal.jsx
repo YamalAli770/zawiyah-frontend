@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { API_URL, TOAST_CONFIG } from "../../config";
 
-const Modal = ({ user, id, currentPrice, setOpenModal }) => {
+const Modal = ({ user, id, price, setOpenModal }) => {
   const [bidAmount, setBidAmount] = useState("");
 
   const handleBidSubmit = async () => {
@@ -12,7 +12,7 @@ const Modal = ({ user, id, currentPrice, setOpenModal }) => {
       return;
     }
 
-    if(bidAmount <= currentPrice) {
+    if(bidAmount <= price) {
       toast.error("Please enter a bid amount greater than the current bid.", TOAST_CONFIG);
       return;
     }
@@ -53,7 +53,7 @@ const Modal = ({ user, id, currentPrice, setOpenModal }) => {
                       className="text-base font-semibold leading-6 text-gray-900"
                       id="modal-title"
                     >
-                      Current Highest Bid: ${currentPrice}
+                      Current Highest Bid: ${price}
                     </h3>
                     <div className="mt-4 mb-4">
                       <label htmlFor="bid">Set Your Bid: </label>

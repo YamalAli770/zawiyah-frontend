@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import About from "./components/About"
 import Cart from "./components/Cart"
@@ -18,8 +18,46 @@ import Statistic from "./components/Statistic"
 import Success from "./components/Success"
 import Cancel from "./components/Cancel"
 import Error from "./components/Error"
+import { useStore } from "./store"
+import { isAccessTokenCloseToExpiry } from "./refreshAccessToken"
+import axios from "axios"
+import { API_URL } from "../config"
 
 function App() {
+  // const user = useStore((state) => state.user);
+  // const setUser = useStore((state) => state.setUser);
+
+  // const handleTokenRefresh = async () => {
+  //   try {
+  //     const response = await axios.post(`${API_URL}api/auth/refresh-token`, {}, {
+  //       withCredentials: true,
+  //       headers: {
+  //         'Authorization': 'Bearer ' + user.accessToken,
+  //       }
+  //     })
+  //     if(response.data) {
+  //       console.log(response.data);
+  //       setUser({
+  //         ...user,
+  //         accessToken: response.data.accessToken,
+  //       });
+  //       localStorage.setItem('user', JSON.stringify({
+  //         ...user,
+  //         accessToken: response.data.accessToken,
+  //       }));
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if(user && isAccessTokenCloseToExpiry(user.accessToken)) {
+  //     console.log("refreshing token");
+  //     handleTokenRefresh();
+  //   }
+  // }, [user]);
+
   const [isCartOpen, setIsCartOpen] = useState(false);
   return (
     <div className="bg-customBg text-customText">

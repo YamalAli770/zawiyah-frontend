@@ -1,24 +1,28 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineShoppingCart, AiOutlineUser } from "react-icons/ai";
-import { UserContext } from "../context/UserContext";
 import { toast } from "react-toastify";
 import axios from "axios";
 import Cart from "./Cart";
 import { API_URL, TOAST_CONFIG } from "../../config";
+import { useStore } from "../store";
 
-const Navbar = ({ }) => {
+const Navbar = () => {
+  const user = useStore((state) => state.user);
+  const deleteUser = useStore((state) => state.deleteUser);
+  
   const navigate = useNavigate();
-  const { user, dispatch } = useContext(UserContext);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const handleLogout = async () => {
     try {
-      const res = await axios.get(`${API_URL}api/auth/logout`);
+      const res = await axios.get(`${API_URL}api/auth/logout`, {
+        withCredentials: true,
+      });
       if(res.status === 204) {
-          dispatch({ type: 'LOGOUT_USER' });
-          localStorage.clear();
-          navigate('/');
-          toast.success("User Successfully Logged Out", TOAST_CONFIG);
+        deleteUser();
+        localStorage.clear();
+        navigate('/');
+        toast.success("User Successfully Logged Out", TOAST_CONFIG);
       }
   } catch (error) {
       toast.error("Cannot Logout User", TOAST_CONFIG);

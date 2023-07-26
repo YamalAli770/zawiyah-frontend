@@ -1,13 +1,13 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../context/UserContext";
 import axios from "axios";
 // import { loadStripe } from "@stripe/stripe-js";
 import { API_URL, IMAGE_SETTING, TOAST_CONFIG } from "../../config";
 import { toast } from "react-toastify";
+import { useStore } from "../store";
 
 const Cart = ({ setIsCartOpen }) => {
-  const { user } = useContext(UserContext);
+  const user = useStore((state) => state.user);
   const [cart, setCart] = useState([]);
   const [cartProducts, setCartProducts] = useState([]);
   const [cartTotal, setCartTotal] = useState(0);

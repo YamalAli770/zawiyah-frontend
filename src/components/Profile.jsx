@@ -3,9 +3,11 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { API_URL, IMAGE_SETTING, TOAST_CONFIG } from "../../config";
+import { useStore } from "../store";
 
 const Profile = () => {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = useStore((state) => state.user);
+  
   const [userData, setUserData] = useState({});
   const [userBidProducts, setUserBidProducts] = useState([]);
 
@@ -134,15 +136,15 @@ const Profile = () => {
           <div className="flex flex-wrap justify-center gap-5 max-w-90">
             {/* Cards */}
             {userBidProducts.map((product) => (
-              <Link key={product._id} to={`/shop/${product._id}`} className="w-72">
+              <Link key={product._id} to={`/shop/${product._id}`} className="w-72 bg-white rounded-t-lg rounded-b-lg overflow-hidden shadow-[6px_17px_47px_13px_#486565E3]">
                 <img
                   src={`${product.image}${IMAGE_SETTING}`}
-                  className="rounded-t-lg h-48 w-full object-cover"
+                  className=" h-48 w-full object-cover"
                   alt=""
                 />
-                <div className="p-5 text-white bg-customButton">
+                <div className="p-5 text-black bg-customButton">
                   <h5 className="mb-2 text-2xl font-bold">{product.name}</h5>
-                  <p>Bid For ${product.currentPrice}</p>
+                  <p className="productPrice">Bid For ${product.price}</p>
                 </div>
               </Link>
             ))}

@@ -1,14 +1,16 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { UserContext } from "../context/UserContext";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { API_URL, TOAST_CONFIG } from "../../config";
+import { useStore } from "../store";
 
 const Login = () => {
+  const setUser = useStore((state) => state.setUser);
+  const user = useStore((state) => state.user);
+
   const navigate = useNavigate();
   const from = location?.state?.from?.pathname || "/";
-  const { dispatch } = useContext(UserContext);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -23,15 +25,21 @@ const Login = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    dispatch({ type: "LOGIN_START" });
     try {
       const response = await axios.post(`${API_URL}api/auth/login`, {
         email,
         password
       }, { withCredentials: true });
       if(response.data) {
-        dispatch({ type: "LOGIN_SUCCESS", payload: response.data });
+        const {_id, username, accessToken, accountType} = response.data;
+        const fetchedUser = {
+          id: _id,
+          username,
+          accessToken,
+          accountType
+        };
+        localStorage.setItem("user", JSON.stringify(fetchedUser));
+        setUser(fetchedUser);
       }
 
       toast.success("Logged in successfully", TOAST_CONFIG);
@@ -46,7 +54,6 @@ const Login = () => {
       navigate(from, { replace: true });
     } catch (error) {
       console.log(error)
-      dispatch({ type: "LOGIN_FAILURE" });
       toast.error(error.response.data.message, TOAST_CONFIG);
     }
   };

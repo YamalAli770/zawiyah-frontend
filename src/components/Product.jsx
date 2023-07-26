@@ -1,15 +1,16 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "./Modal";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { UserContext } from "../context/UserContext";
 import { API_URL, IMAGE_SETTING, TOAST_CONFIG } from "../../config";
 import { Triangle } from "react-loader-spinner";
 import io from "socket.io-client";
+import { useStore } from "../store";
 
 const Product = () => {
-  const { user } = useContext(UserContext);
+  const user = useStore((state) => state.user);
+
   const { id } = useParams();
 
   const [product, setProduct] = useState({});
@@ -26,7 +27,6 @@ const Product = () => {
       try {
         const response = await axios.get(`${API_URL}api/products/${id}`);
         if (response.data) {
-          console.log(response.data)
           setProduct(response.data);
           startTimer(response.data.createdAt);
         }
@@ -150,10 +150,10 @@ const Product = () => {
                 </div>
               )}
               <div className="flex mt-8 justify-between">
-                <span className="title-font font-medium text-2xl">
+                <span className="title-font productPrice font-medium text-2xl">
                   ${product.price}
                 </span>
-                {user && user.accountType.toLowerCase() === 'buyer' && !product.finalPrice && (
+                {user && user.accountType.toLowerCase() === 'buyer' && countdown !== "Bidding has ended" && (
                   <button
                     className="flex ml-auto text-customButtonText bg-customButtonBg border-0 py-2 px-6 focus:outline-none hover:brightness-50 rounded"
                     onClick={() => setOpenModal(true)}
@@ -194,7 +194,7 @@ const Product = () => {
           <Modal
             user={user}
             id={id}
-            currentPrice={product.price}
+            price={product.price}
             setOpenModal={setOpenModal}
           />
         )}

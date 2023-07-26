@@ -38,7 +38,7 @@ const Shop = () => {
           <Triangle {...TRIANGLE_LOADER_CONFIG} />
         </div>
       ) : (
-        <section className="text-customText body-font">
+        <section className="h-screen text-customText body-font">
           <div className="container px-5 py-24 mx-auto">
             <div className="flex flex-wrap -m-4">
               {products.map((product) => {
@@ -74,7 +74,7 @@ const Shop = () => {
                       <h2 className="text-customHeading title-font text-lg font-medium">
                         {product.name}
                       </h2>
-                      <p className="mt-1">${product.price}</p>
+                      <p className="mt-1 productPrice">${product.price}</p>
                     </div>
                   </Link>
                 );
