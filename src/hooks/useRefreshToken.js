@@ -10,9 +10,11 @@ const useRefreshToken = () => {
             withCredentials: true
         });
         localStorage.setItem("auth", JSON.stringify(response.data));
-        setAuth(response.data);
+        const accessToken = response.data.accessToken;
 
-        return response.data;
+        setAuth(accessToken);
+
+        return accessToken;
     }
     return refresh;
 }
