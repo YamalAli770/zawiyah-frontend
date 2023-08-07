@@ -7,7 +7,7 @@ const store = (set) => ({
     setUser: (user) => set({ user: user }),
     deleteUser: () => set({ user: null }),
 
-    setAuth: (auth) => set({ auth: auth }),
+    setAuth: (auth) => set({ auth: { accessToken: auth }}),
     deleteAuth: () => set({ auth: null })
 });
 

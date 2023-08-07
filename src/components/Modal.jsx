@@ -5,7 +5,7 @@ import { API_URL, TOAST_CONFIG } from "../../config";
 import { useStore } from "../store";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
-const Modal = ({ user, id, price, setOpenModal }) => {
+const Modal = ({ id, price, setOpenModal }) => {
   const axiosPrivate = useAxiosPrivate();
   const auth = useStore((state) => state.auth);
   const [bidAmount, setBidAmount] = useState("");
@@ -22,7 +22,11 @@ const Modal = ({ user, id, price, setOpenModal }) => {
     }
 
     try {
-      const response = await axiosPrivate.post(`${API_URL}api/bid/create`, { bidAmount, bidOn: id});
+      const response = await axiosPrivate.post(`${API_URL}api/bid/create`, { bidAmount, bidOn: id}, {
+        headers: {
+          'Authorization': 'Bearer ' + auth.accessToken
+        }
+      });
       if (response.data) {
         toast.success("Bid placed successfully!", TOAST_CONFIG);
         setOpenModal(false);
