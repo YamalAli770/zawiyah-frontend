@@ -10,6 +10,7 @@ import { useStore } from "../store";
 const Navbar = () => {
   const user = useStore((state) => state.user);
   const deleteUser = useStore((state) => state.deleteUser);
+  const deleteAuth = useStore((state) => state.deleteAuth);
   
   const navigate = useNavigate();
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -20,6 +21,7 @@ const Navbar = () => {
       });
       if(res.status === 204) {
         deleteUser();
+        deleteAuth();
         localStorage.clear();
         navigate('/');
         toast.success("User Successfully Logged Out", TOAST_CONFIG);
@@ -28,6 +30,7 @@ const Navbar = () => {
       toast.error("Cannot Logout User", TOAST_CONFIG);
   }
   };
+
   return (
     <header className="text-customLink body-font">
       <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
@@ -35,7 +38,7 @@ const Navbar = () => {
           <Link to="/" className="ml-3 text-2xl text-customHeading italic">
             Zawiyah
           </Link>
-          {/* <img src="https://i.ibb.co/4SjWQmt/Zawiyah-Logo.png" alt="" className="w-20" /> */}
+          {/* <img src="https://i.ibb.co/4SjWQmt/Zawiyah-Logo.png" alt="" className="w-30" /> */}
         </div>
         <nav className="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
           <Link to="/" className="mr-5 hover:brightness-150">

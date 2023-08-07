@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react"
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { useState } from "react"
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import About from "./components/About"
 import Cart from "./components/Cart"
 import Contact from "./components/Contact"
@@ -18,12 +18,14 @@ import Statistic from "./components/Statistic"
 import Success from "./components/Success"
 import Cancel from "./components/Cancel"
 import Error from "./components/Error"
-import { useStore } from "./store"
-import { isAccessTokenCloseToExpiry } from "./refreshAccessToken"
 import axios from "axios"
 import { API_URL } from "../config"
+import ProtectedRoutes from "./components/ProtectedRoutes"
+
+import { useStore } from "./store"
 
 function App() {
+  const auth = useStore(state => state.auth);
   // const user = useStore((state) => state.user);
   // const setUser = useStore((state) => state.setUser);
 
@@ -74,13 +76,15 @@ function App() {
                 <Statistic />
               </>
             } />
+            <Route element={<ProtectedRoutes />}>
+              <Route path="/new" element={<ListProduct />} />
+            </Route>
             <Route path="/about" element={<About />} />
             <Route path="/shop" element={<Shop />} />
             <Route path="/shop/:id" element={<Product />} />
-            <Route path="/new" element={<ListProduct />} />
-            <Route path="/register" element={<Register />} />
+            <Route path="/register" element={auth ? <Navigate to="/" /> : <Register />} />
+            <Route path="/login" element={auth ? <Navigate to="/" /> : <Login /> } />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/login" element={<Login />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/success" element={<Success />} />
             <Route path="/cancel" element={<Cancel />} />

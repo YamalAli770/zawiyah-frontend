@@ -8,6 +8,7 @@ import { useStore } from "../store";
 
 const Cart = ({ setIsCartOpen }) => {
   const user = useStore((state) => state.user);
+  const auth = useStore((state) => state.auth)
   const [cart, setCart] = useState([]);
   const [cartProducts, setCartProducts] = useState([]);
   const [cartTotal, setCartTotal] = useState(0);
@@ -17,7 +18,7 @@ const Cart = ({ setIsCartOpen }) => {
       try {
         const response = await axios.get(`${API_URL}api/cart/${user.id}`, {
           headers: {
-            Authorization: "Bearer " + user.accessToken,
+            Authorization: "Bearer " + auth,
           },
         });
         if (response.data) {
@@ -26,7 +27,7 @@ const Cart = ({ setIsCartOpen }) => {
 
           const cartProductsResponse = await axios.get(`${API_URL}api/cart/products/${user.id}`, {
             headers: {
-              Authorization: "Bearer " + user.accessToken,
+              Authorization: "Bearer " + auth,
             }
           });
           if(cartProductsResponse.data) {
@@ -47,7 +48,7 @@ const Cart = ({ setIsCartOpen }) => {
     try {
       const response = await axios.delete(`${API_URL}api/cart/remove`, {
         headers: {
-          Authorization: "Bearer " + user.accessToken,
+          Authorization: "Bearer " + auth,
         },
         data: {
           id: user.id,
@@ -60,7 +61,7 @@ const Cart = ({ setIsCartOpen }) => {
 
         const cartProductsResponse = await axios.get(`${API_URL}api/cart/products/${user.id}`, {
           headers: {
-            Authorization: "Bearer " + user.accessToken,
+            Authorization: "Bearer " + auth,
           }
         });
         if(cartProductsResponse.data) {

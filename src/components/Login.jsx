@@ -7,6 +7,7 @@ import { useStore } from "../store";
 
 const Login = () => {
   const setUser = useStore((state) => state.setUser);
+  const setAuth = useStore((state) => state.setAuth);
   const user = useStore((state) => state.user);
 
   const navigate = useNavigate();
@@ -35,11 +36,12 @@ const Login = () => {
         const fetchedUser = {
           id: _id,
           username,
-          accessToken,
           accountType
         };
         localStorage.setItem("user", JSON.stringify(fetchedUser));
+        localStorage.setItem("auth", JSON.stringify(accessToken));
         setUser(fetchedUser);
+        setAuth(accessToken);
       }
 
       toast.success("Logged in successfully", TOAST_CONFIG);

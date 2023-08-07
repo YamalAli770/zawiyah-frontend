@@ -2,8 +2,12 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { API_URL, TOAST_CONFIG } from "../../config";
+import { useStore } from "../store";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const Modal = ({ user, id, price, setOpenModal }) => {
+  const axiosPrivate = useAxiosPrivate();
+  const auth = useStore((state) => state.auth);
   const [bidAmount, setBidAmount] = useState("");
 
   const handleBidSubmit = async () => {
@@ -18,11 +22,7 @@ const Modal = ({ user, id, price, setOpenModal }) => {
     }
 
     try {
-      const response = await axios.post(`${API_URL}api/bid/create`, { bidAmount, bidOn: id}, {
-          headers: {
-            Authorization: 'Bearer ' + user.accessToken,
-        }
-      });
+      const response = await axiosPrivate.post(`${API_URL}api/bid/create`, { bidAmount, bidOn: id});
       if (response.data) {
         toast.success("Bid placed successfully!", TOAST_CONFIG);
         setOpenModal(false);

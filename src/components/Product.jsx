@@ -7,14 +7,17 @@ import { API_URL, IMAGE_SETTING, TOAST_CONFIG } from "../../config";
 import { Triangle } from "react-loader-spinner";
 import io from "socket.io-client";
 import { useStore } from "../store";
+import Timer from "./Timer";
 
 const Product = () => {
   const user = useStore((state) => state.user);
 
+  const auth = useStore((state) => state.auth);
+
   const { id } = useParams();
 
+
   const [product, setProduct] = useState({});
-  const [countdown, setCountdown] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const [highestBid, setHighestBid] = useState(null);
@@ -28,35 +31,37 @@ const Product = () => {
         const response = await axios.get(`${API_URL}api/products/${id}`);
         if (response.data) {
           setProduct(response.data);
-          startTimer(response.data.createdAt);
+          setLoading(false);
         }
       } catch (error) {
+        setLoading(false);
         toast.error(error.response.data.message, TOAST_CONFIG);
       }
     };
     fetchProduct();
   }, [id]);
 
-  const fetchHighestBid = async () => {
-    try {
-      const response = await axios.get(`${API_URL}api/bid/highest/${id}`, {
-        headers: {
-          Authorization: 'Bearer ' + user.accessToken
-        }
-      });
-      if (response.data) {
-        setHighestBid(response.data);
-      }
-    } catch (error) {
-      toast.info(error.response.data.message, TOAST_CONFIG);
-    }
-  };
+  // ! Fetch Highest Bid
+  // const fetchHighestBid = async () => {
+  //   try {
+  //     const response = await axios.get(`${API_URL}api/bid/highest/${id}`, {
+  //       headers: {
+  //         Authorization: 'Bearer ' + auth
+  //       }
+  //     });
+  //     if (response.data) {
+  //       setHighestBid(response.data);
+  //     }
+  //   } catch (error) {
+  //     toast.info(error.response.data.message, TOAST_CONFIG);
+  //   }
+  // };
 
-  useEffect(() => {
-    if(product && product.finalPrice) {
-      fetchHighestBid();
-    }
-  }, [product])
+  // useEffect(() => {
+  //   if(product && product.finalPrice) {
+  //     fetchHighestBid();
+  //   }
+  // }, [product])
 
   useEffect(() => {
     const socket = io(API_URL);
@@ -76,37 +81,11 @@ const Product = () => {
     };
   }, [product]);
 
-  const startTimer = (createdAt) => {
-    const oneDayInMillis = 1 * 24 * 60 * 60 * 1000; // One days in milliseconds
-    const biddingEndTime = new Date(createdAt).getTime() + oneDayInMillis;
-
-    const timer = setInterval(() => {
-      const currentTime = new Date().getTime();
-      const remainingTime = biddingEndTime - currentTime;
-
-      if (remainingTime > 0) {
-        const hours = Math.floor(
-          (remainingTime % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000)
-        );
-        const minutes = Math.floor(
-          (remainingTime % (60 * 60 * 1000)) / (60 * 1000)
-        );
-        const seconds = Math.floor((remainingTime % (60 * 1000)) / 1000);
-        setCountdown(`${hours}h ${minutes}m ${seconds}s`);
-        setLoading(false);
-      } else {
-        setCountdown("Bidding has ended");
-        setLoading(false);
-        clearInterval(timer);
-      }
-    }, 1000);
-  };
-
   const addItemToCart = async () => {
     try {
       const response = await axios.post(`${API_URL}api/cart/add`, { id: user.id, productId: product._id }, {
         headers: {
-          Authorization: 'Bearer ' + user.accessToken
+          Authorization: 'Bearer ' + auth
         },
       });
       if (response.data) {
@@ -153,7 +132,7 @@ const Product = () => {
                 <span className="title-font productPrice font-medium text-2xl">
                   ${product.price}
                 </span>
-                {user && user.accountType.toLowerCase() === 'buyer' && countdown !== "Bidding has ended" && (
+                {user && user.accountType.toLowerCase() === 'buyer' && (
                   <button
                     className="flex ml-auto text-customButtonText bg-customButtonBg border-0 py-2 px-6 focus:outline-none hover:brightness-50 rounded"
                     onClick={() => setOpenModal(true)}
@@ -179,9 +158,7 @@ const Product = () => {
                   </svg>
                 </button>
               </div>
-              {countdown && (
-                <div className="text-gray-500 mt-2">Time left: {countdown}</div>
-              )}
+              {/* { <Timer createdAt={product.createdAt} setLoading={setLoading} />} */}
             </div>
             <img
               alt="ecommerce"

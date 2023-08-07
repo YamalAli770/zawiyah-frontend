@@ -1,14 +1,16 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { API_URL, TOAST_CONFIG, TRIANGLE_LOADER_CONFIG } from "../../config";
 import { uploadFile } from '@uploadcare/upload-client'
 import { Triangle } from "react-loader-spinner";
 import { useStore } from '../store';
+import useAxiosPrivate from '../hooks/useAxiosPrivate';
 
 const ListProduct = () => {
+  const axiosPrivate = useAxiosPrivate();
   const user = useStore((state) => state.user);
+  const auth = useStore((state) => state.auth);
   const [imageUploading, setImageUploading] = useState(false);
   const navigate = useNavigate();
   const [productData, setProductData] = useState({
@@ -64,10 +66,9 @@ const ListProduct = () => {
 
 
     try {
-      console.log(user)
-      const response = await axios.post(`${API_URL}api/products/create`, formData, {
+      const response = await axiosPrivate.post(`${API_URL}api/products/create`, formData, {
         headers: {
-          Authorization: 'Bearer ' + user.accessToken,
+          Authorization: 'Bearer ' + auth,
         },
       });
       if(response.data) {
@@ -89,7 +90,7 @@ const ListProduct = () => {
       navigate("/shop");
 
     } catch (error) {
-      toast.error(error.response.data.message, TOAST_CONFIG);
+      toast.error(error, TOAST_CONFIG);
     }
   };
 
