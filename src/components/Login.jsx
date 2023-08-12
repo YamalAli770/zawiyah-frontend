@@ -8,7 +8,7 @@ import { useStore } from "../store";
 const Login = () => {
   const setUser = useStore((state) => state.setUser);
   const setAuth = useStore((state) => state.setAuth);
-  const user = useStore((state) => state.user);
+  const setCart = useStore((state) => state.setCart);
 
   const navigate = useNavigate();
   const from = location?.state?.from?.pathname || "/";
@@ -33,6 +33,18 @@ const Login = () => {
       }, { withCredentials: true });
       if(response.data) {
         const {_id, username, accessToken, accountType} = response.data;
+
+        const cart = await axios.get(`${API_URL}api/cart/${_id}`, {
+          headers: {
+            'Authorization': 'Bearer ' + accessToken,
+          }
+        });
+
+        if(cart.data) {
+          setCart(cart.data);
+          localStorage.setItem("cart", JSON.stringify(cart.data));
+        }
+
         const fetchedUser = {
           id: _id,
           username,

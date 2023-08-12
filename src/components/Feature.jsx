@@ -3,9 +3,9 @@ import React from "react";
 const Feature = () => {
   return (
     <section className="text-customText body-font">
-      <div className="container px-5 py-24 mx-auto">
-        <div className="text-center mb-20">
-          <h1 className="sm:text-3xl text-2xl font-medium title-font text-customHeading mb-4">
+      <div className="container px-5 lg:py-24 mx-auto">
+        <div className="text-center md:mb-20">
+          <h1 className="sm:text-3xl pt-12 md:pt-0 text-2xl font-medium title-font text-customHeading mb-4">
           Explore the Features of Zawiyah
           </h1>
           <p className="text-base leading-relaxed xl:w-2/4 lg:w-3/4 mx-auto text-gray-500s">

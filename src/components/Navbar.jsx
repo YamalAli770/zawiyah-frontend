@@ -1,19 +1,25 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineShoppingCart, AiOutlineUser } from "react-icons/ai";
+import { FaHamburger } from 'react-icons/fa';
 import { toast } from "react-toastify";
 import axios from "axios";
 import Cart from "./Cart";
 import { API_URL, TOAST_CONFIG } from "../../config";
 import { useStore } from "../store";
+import Hamburger from "./Hamburger";
 
 const Navbar = () => {
   const user = useStore((state) => state.user);
+  const cart = useStore((state) => state.cart);
   const deleteUser = useStore((state) => state.deleteUser);
   const deleteAuth = useStore((state) => state.deleteAuth);
+  const deleteCart = useStore((state) => state.deleteCart);
   
   const navigate = useNavigate();
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
+
   const handleLogout = async () => {
     try {
       const res = await axios.get(`${API_URL}api/auth/logout`, {
@@ -22,6 +28,7 @@ const Navbar = () => {
       if(res.status === 204) {
         deleteUser();
         deleteAuth();
+        deleteCart();
         localStorage.clear();
         navigate('/');
         toast.success("User Successfully Logged Out", TOAST_CONFIG);
@@ -33,14 +40,14 @@ const Navbar = () => {
 
   return (
     <header className="text-customLink body-font">
-      <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
-        <div className="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
-          <Link to="/" className="ml-3 text-2xl text-customHeading italic">
-            Zawiyah
+      <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row md:items-center">
+        <div className="flex title-font justify-between font-medium items-center text-gray-900 mb-4 md:mb-0">
+          <Link to="/" className="ml-3 text-4xl text-customHeading" id="logo-font">
+          زاویہ     
           </Link>
-          {/* <img src="https://i.ibb.co/4SjWQmt/Zawiyah-Logo.png" alt="" className="w-30" /> */}
+          <div className="text-white block md:hidden cursor-pointer" onClick={() => setIsHamburgerOpen(true)}><FaHamburger fontSize="1.5rem" /></div>
         </div>
-        <nav className="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
+        <nav className="hidden md:block md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
           <Link to="/" className="mr-5 hover:brightness-150">
             Home
           </Link>
@@ -63,7 +70,7 @@ const Navbar = () => {
         { !user ? (
           <Link
             to="/login"
-            className="inline-flex items-center bg-customButtonBg border-0 py-1 px-3 focus:outline-none hover:brightness-50 rounded text-customButtonText mt-4 md:mt-0"
+            className="hidden md:inline-flex items-center bg-customButtonBg border-0 py-1 px-3 focus:outline-none hover:brightness-50 rounded text-customButtonText mt-4 md:mt-0"
           >
             Sign In
             <svg
@@ -79,7 +86,7 @@ const Navbar = () => {
             </svg>
           </Link>
         ) : (
-          <div className="flex gap-2">
+          <div className="hidden md:flex gap-2">
             <Link to="/profile">
               <AiOutlineUser
                 fontSize={25}
@@ -94,7 +101,7 @@ const Navbar = () => {
                 className="cursor-pointer hover:brightness-150"
               />
               <span className="absolute -top-2 -right-2 bg-customText text-white rounded-full w-4 h-4 flex items-center justify-center text-xs">
-              1
+              { cart?.cartItems.length }
               </span>
             </div>
           )}
@@ -102,6 +109,7 @@ const Navbar = () => {
         )}
       </div>
       {isCartOpen && <Cart setIsCartOpen={setIsCartOpen} />}
+      {isHamburgerOpen && <Hamburger setIsHamburgerOpen={setIsHamburgerOpen} />}
     </header>
   );
 };

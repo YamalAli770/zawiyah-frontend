@@ -5,74 +5,14 @@ import axios from "axios";
 import { API_URL, IMAGE_SETTING, TOAST_CONFIG } from "../../config";
 import { toast } from "react-toastify";
 import { useStore } from "../store";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const Cart = ({ setIsCartOpen }) => {
+  const axiosPrivate = useAxiosPrivate();
   const user = useStore((state) => state.user);
-  const auth = useStore((state) => state.auth)
-  const [cart, setCart] = useState([]);
-  const [cartProducts, setCartProducts] = useState([]);
-  const [cartTotal, setCartTotal] = useState(0);
-  
-  useEffect(() => {
-    const getCart = async () => {
-      try {
-        const response = await axios.get(`${API_URL}api/cart/${user.id}`, {
-          headers: {
-            Authorization: "Bearer " + auth,
-          },
-        });
-        if (response.data) {
-          setCart(response.data.cartItems);
-          setCartTotal(response.data.cartTotal);
-
-          const cartProductsResponse = await axios.get(`${API_URL}api/cart/products/${user.id}`, {
-            headers: {
-              Authorization: "Bearer " + auth,
-            }
-          });
-          if(cartProductsResponse.data) {
-            setCartProducts(cartProductsResponse.data);
-          }
-        }
-      } catch (error) {
-        toast.info(error.response.data.message, TOAST_CONFIG);
-      }
-    }
-
-    getCart();
-
-  }, []);
-  
-
-  const handleRemove = async (productId) => {
-    try {
-      const response = await axios.delete(`${API_URL}api/cart/remove`, {
-        headers: {
-          Authorization: "Bearer " + auth,
-        },
-        data: {
-          id: user.id,
-          productId
-        }
-       })
-      if (response.data) {
-        setCart(response.data.cartItems);
-        setCartTotal(response.data.cartTotal);
-
-        const cartProductsResponse = await axios.get(`${API_URL}api/cart/products/${user.id}`, {
-          headers: {
-            Authorization: "Bearer " + auth,
-          }
-        });
-        if(cartProductsResponse.data) {
-          setCartProducts(cartProductsResponse.data);
-        };
-      };
-
-    } catch (error) {
-      toast.info(error.response.data.message, TOAST_CONFIG);
-    }
-  };
+  const auth = useStore((state) => state.auth);
+  const cart = useStore((state) => state.cart);
+  const setCart = useStore((state) => state.setCart);
 
   // const makePayment = async () => {
   //   const stripe = await loadStripe("pk_test_51NGz4VLy4KQTHDHQcyn2NVqBp4O92AdK4fBvqog5b1pRG8CCkVEThInJ7ol0DgqNBs9toTA2GvBWFlha3CaO15y000o83A6CTp");
@@ -138,6 +78,43 @@ const Cart = ({ setIsCartOpen }) => {
   //   }
   // };
 
+  const removeFromCart = async (productId) => {
+    try {
+      const response = await axiosPrivate.delete(
+        `${API_URL}api/cart/remove`,
+        { // ! need to add data in delete requests
+          data: {
+            id: user.id,
+            productId: productId,
+          },
+          headers: {
+            'Authorization': 'Bearer ' + auth.accessToken,
+          },
+        }
+      );
+  
+      if (response.data) {
+        toast.success("Product removed from cart!", TOAST_CONFIG);
+        localStorage.setItem("cart", JSON.stringify(response.data));
+        setCart(response.data);
+      }
+    } catch (error) {
+      toast.error(error.response.data.message, TOAST_CONFIG);
+    }
+  };
+
+  // ! Used to block scrolling when cart is open
+  useEffect(() => {
+    const originalStyle = window.getComputedStyle(document.body).overflow;
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+
+    return () => {
+      document.body.style.overflow = originalStyle;
+      document.body.style.position = '';
+    };
+  }, []);
+
   const navigate = useNavigate();
 
   return (
@@ -191,13 +168,13 @@ const Cart = ({ setIsCartOpen }) => {
 
                       <div className="mt-8">
                         <div className="flow-root">
-                          {cart.length > 0 ? (
+                          {cart.cartItems.length > 0 ? (
                             <ul
                               role="list"
                               className="-my-6 divide-y divide-gray-200"
                             >
-                              {cartProducts &&
-                                cartProducts.map((item) => (
+                              {cart &&
+                                cart.cartItems.map((item) => (
                                   <li className="flex py-6" key={item._id}>
                                     <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                       <img
@@ -213,9 +190,7 @@ const Cart = ({ setIsCartOpen }) => {
                                           <h3>
                                             <span href="#">{item.name}</span>
                                           </h3>
-                                          <p className="ml-4">
-                                            ${item.currentPrice}
-                                          </p>
+                                          <p className="ml-4">${item.price}</p>
                                         </div>
                                         {item.color && (
                                           <p className="mt-1 text-sm text-gray-500">
@@ -228,7 +203,7 @@ const Cart = ({ setIsCartOpen }) => {
                                           <button
                                             type="button"
                                             className="font-medium text-customButton hover:brightness-50"
-                                            onClick={() => handleRemove(item._id)}
+                                            onClick={() => removeFromCart(item._id)}
                                           >
                                             Remove
                                           </button>
@@ -252,15 +227,13 @@ const Cart = ({ setIsCartOpen }) => {
                     <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
                       <div className="flex justify-between text-base font-medium text-gray-900">
                         <p>Subtotal</p>
-                        <p>${cartTotal}</p>
+                        <p>${cart.cartTotal ? cart.cartTotal : 0}</p>
                       </div>
                       <p className="mt-0.5 text-sm text-gray-500">
                         Shipping and taxes calculated at checkout.
                       </p>
                       <div className="mt-6">
-                        <button
-                          className="flex items-center justify-center rounded-md border border-transparent bg-customButton px-6 py-3 text-base font-medium text-white shadow-sm hover:brightness-50"
-                        >
+                        <button className="flex items-center justify-center rounded-md border border-transparent bg-customButton px-6 py-3 text-base font-medium text-white shadow-sm hover:brightness-50">
                           Checkout
                         </button>
                       </div>

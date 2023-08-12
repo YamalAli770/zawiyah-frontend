@@ -8,22 +8,25 @@ import { Triangle } from "react-loader-spinner";
 import io from "socket.io-client";
 import { useStore } from "../store";
 import Timer from "./Timer";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const Product = () => {
-  const user = useStore((state) => state.user);
+  const axiosPrivate = useAxiosPrivate();
 
+  const user = useStore((state) => state.user);
   const auth = useStore((state) => state.auth);
+  const setCart = useStore((state) => state.setCart);
 
   const { id } = useParams();
 
 
   const [product, setProduct] = useState({});
   const [loading, setLoading] = useState(true);
+  const [hasBiddingEnded, setHasBiddingEnded] = useState(false);
 
   const [highestBid, setHighestBid] = useState(null);
 
-  // const [socket, setSocket] = useState(null);
-
+  // ! Fetch Product
   useEffect(() => {
     const fetchProduct = async () => {
       setLoading(true);
@@ -41,31 +44,10 @@ const Product = () => {
     fetchProduct();
   }, [id]);
 
-  // ! Fetch Highest Bid
-  // const fetchHighestBid = async () => {
-  //   try {
-  //     const response = await axios.get(`${API_URL}api/bid/highest/${id}`, {
-  //       headers: {
-  //         Authorization: 'Bearer ' + auth
-  //       }
-  //     });
-  //     if (response.data) {
-  //       setHighestBid(response.data);
-  //     }
-  //   } catch (error) {
-  //     toast.info(error.response.data.message, TOAST_CONFIG);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if(product && product.finalPrice) {
-  //     fetchHighestBid();
-  //   }
-  // }, [product])
-
+  // ! Listen To Socket Event 
   useEffect(() => {
     const socket = io(API_URL);
-
+    
     socket.on("newBid", (data) => {
       product && toast.success(`New bid of $${data.bid.bidAmount} on ${product.name}`, TOAST_CONFIG);
       setProduct((prevProduct) => {
@@ -75,27 +57,58 @@ const Product = () => {
         };
       });
     });
-
+    
     return () => {
       socket?.disconnect();
     };
   }, [product]);
-
-  const addItemToCart = async () => {
+  
+  // ! Fetch Highest Bid
+  const fetchHighestBid = async () => {
     try {
-      const response = await axios.post(`${API_URL}api/cart/add`, { id: user.id, productId: product._id }, {
+      const response = await axiosPrivate.get(`${API_URL}api/bid/highest/${id}`, {
         headers: {
-          Authorization: 'Bearer ' + auth
-        },
+          Authorization: 'Bearer ' + auth.accessToken
+        }
       });
       if (response.data) {
-        toast.success("Item added to cart successfully", TOAST_CONFIG);
+        setHighestBid(response.data);
       }
     } catch (error) {
-      console.log(error);
-      toast.error(error.response.data.message, TOAST_CONFIG);
+      toast.info(error.response.data.message, TOAST_CONFIG);
     }
   };
+
+  // ! Add To Cart
+  const addToCart = async () => {
+    try {
+      const response = await axiosPrivate.post(`${API_URL}api/cart/add`, {
+        id: user.id,
+        productId: id
+      }, {
+        headers: {
+          Authorization: 'Bearer ' + auth.accessToken
+        }
+      });
+      if (response.data) {
+        toast.success("Product added to cart", TOAST_CONFIG);
+        localStorage.setItem("cart", JSON.stringify(response.data));
+        setCart(response.data);
+      }
+    } catch (error) {
+      if(error.response.status === 409) {
+        toast.info(error.response.data.message, TOAST_CONFIG);
+      } else {
+      toast.error(error.response.data.message, TOAST_CONFIG);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (hasBiddingEnded === true) {
+      fetchHighestBid();
+    }
+  }, [hasBiddingEnded]);
 
   const [openModal, setOpenModal] = useState(false);
   return (
@@ -132,7 +145,7 @@ const Product = () => {
                 <span className="title-font productPrice font-medium text-2xl">
                   ${product.price}
                 </span>
-                {user && user.accountType.toLowerCase() === 'buyer' && (
+                {user && user.accountType.toLowerCase() === 'buyer' && !hasBiddingEnded && (
                   <button
                     className="flex ml-auto text-customButtonText bg-customButtonBg border-0 py-2 px-6 focus:outline-none hover:brightness-50 rounded"
                     onClick={() => setOpenModal(true)}
@@ -140,11 +153,14 @@ const Product = () => {
                     Bid Now
                   </button>
                 )}
-                { product?.finalPrice && user?.id === highestBid?.bidBy && <button
+                {user && user.accountType.toLowerCase() === 'buyer' && hasBiddingEnded && highestBid && highestBid.bidBy === user.id && (
+                  <button
                     className="flex ml-auto text-customButtonText bg-customButtonBg border-0 py-2 px-6 focus:outline-none hover:brightness-50 rounded"
-                  onClick={addItemToCart} >
+                    onClick={() => addToCart()}
+                  >
                     Add To Cart
-                  </button>}
+                  </button>
+                )}
                 <button className="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4">
                   <svg
                     fill="currentColor"
@@ -158,7 +174,7 @@ const Product = () => {
                   </svg>
                 </button>
               </div>
-              {/* { <Timer createdAt={product.createdAt} setLoading={setLoading} />} */}
+              <Timer createdAt={product.createdAt} setLoading={setLoading} setHasBiddingEnded={setHasBiddingEnded} />
             </div>
             <img
               alt="ecommerce"

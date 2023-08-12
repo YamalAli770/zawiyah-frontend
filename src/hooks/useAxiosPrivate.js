@@ -9,8 +9,6 @@ const useAxiosPrivate = () => {
     const auth = useStore((state) => state.auth)
 
     useEffect(() => {
-        console.log("useEffect runs");
-
         const requestIntercept = axiosPrivate.interceptors.request.use(
             config => {
                 if(!config.headers['Authorization']) { // first attempt
@@ -24,7 +22,6 @@ const useAxiosPrivate = () => {
             response => response, // this is for all successful responses
             async (error) => { // if token expires we handle here
                 const prevRequest = error?.config; // get prev request
-                console.log("prevRequest", prevRequest);
                 if(error?.response?.status === 403 && !prevRequest.sent) {
                     prevRequest.sent = true; // prevent infinite loop
                     const newAccessToken = await refresh();
