@@ -30,6 +30,7 @@ const Navbar = () => {
         deleteAuth();
         deleteCart();
         localStorage.clear();
+        isHamburgerOpen && setIsHamburgerOpen(false);
         navigate('/');
         toast.success("User Successfully Logged Out", TOAST_CONFIG);
       }
@@ -109,7 +110,7 @@ const Navbar = () => {
         )}
       </div>
       {isCartOpen && <Cart setIsCartOpen={setIsCartOpen} />}
-      {isHamburgerOpen && <Hamburger setIsHamburgerOpen={setIsHamburgerOpen} />}
+      {isHamburgerOpen && <Hamburger setIsHamburgerOpen={setIsHamburgerOpen} setIsCartOpen={setIsCartOpen} handleLogout={handleLogout} />}
     </header>
   );
 };

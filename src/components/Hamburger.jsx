@@ -4,8 +4,17 @@ import { useStore } from '../store'
 import { MdOutlineArrowForwardIos } from 'react-icons/md'
 import { AiFillCloseCircle } from 'react-icons/ai'
 
-const Hamburger = ({ setIsHamburgerOpen }) => {
+const Hamburger = ({ setIsHamburgerOpen, setIsCartOpen, handleLogout }) => {
   const user = useStore((state) => state.user);
+  const handleCloseMenu = () => {
+    setIsHamburgerOpen(false);
+  }
+
+  const handleOpenCart = () => {
+    setIsHamburgerOpen(false);
+    setIsCartOpen(true);
+  }
+
   return (
     <div className="relative z-10 md:hidden" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
           <div className="fixed inset-0 overflow-hidden">
@@ -31,15 +40,15 @@ const Hamburger = ({ setIsHamburgerOpen }) => {
                       <div className="mt-8">
                         <nav className="flow-root">
                           <ul className='pl-3 flex flex-col gap-5 uppercase text-sm'>
-                            <Link className='flex items-center justify-between'>About Us<MdOutlineArrowForwardIos /></Link>
-                            <Link className='flex items-center justify-between'>Shop<MdOutlineArrowForwardIos /></Link>
-                            <Link className='flex items-center justify-between'>Contact<MdOutlineArrowForwardIos /></Link>
-                            { user && user.accountType.toLowerCase() === 'seller' && <Link className='flex items-center justify-between'>List Product<MdOutlineArrowForwardIos /></Link>}
-                            { user && <Link className='flex items-center justify-between'>Logout<MdOutlineArrowForwardIos /></Link>}
-                            <Link className='flex items-center justify-between'>Cart<MdOutlineArrowForwardIos /></Link>
-                            <Link className='flex items-center justify-between'>Profile<MdOutlineArrowForwardIos /></Link>
-                            <Link className='flex items-center justify-between'>Sign In<MdOutlineArrowForwardIos /></Link>
-                            <Link className='flex items-center justify-between'>My Orders<MdOutlineArrowForwardIos /></Link>
+                            <Link to="/about" className='flex items-center justify-between' onClick={handleCloseMenu}>About Us<MdOutlineArrowForwardIos /></Link>
+                            <Link to="/shop" className='flex items-center justify-between' onClick={handleCloseMenu}>Shop<MdOutlineArrowForwardIos /></Link>
+                            <Link to="/contact" className='flex items-center justify-between' onClick={handleCloseMenu}>Contact<MdOutlineArrowForwardIos /></Link>
+                            { user && user.accountType.toLowerCase() === 'seller' && <Link to="/new" className='flex items-center justify-between' onClick={handleCloseMenu}>List Product<MdOutlineArrowForwardIos /></Link>}
+                            { user && <Link className='flex items-center justify-between' onClick={handleLogout}>Logout<MdOutlineArrowForwardIos /></Link>}
+                            { user && user.accountType.toLowerCase() === 'buyer' && <Link className='flex items-center justify-between' onClick={handleOpenCart}>Cart<MdOutlineArrowForwardIos /></Link>}
+                            { user && <Link to="/profile" className='flex items-center justify-between' onClick={handleCloseMenu}>Profile<MdOutlineArrowForwardIos /></Link>}
+                            { !user && <Link to="/login" className='flex items-center justify-between' onClick={handleCloseMenu}>Sign In<MdOutlineArrowForwardIos /></Link>}
+                            { user && <Link to="/orders" className='flex items-center justify-between' onClick={handleCloseMenu}>My Orders<MdOutlineArrowForwardIos /></Link>}
                           </ul>
                         </nav>
                       </div>

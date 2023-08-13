@@ -4,10 +4,38 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { Triangle } from "react-loader-spinner";
 import { API_URL, IMAGE_SETTING, TOAST_CONFIG, TRIANGLE_LOADER_CONFIG } from "../../config";
+import Pagination from "./Pagination";
 
 const Shop = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(null);
+
+  // ! Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const postsPerPage = 8;
+
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentProducts = products.slice(indexOfFirstPost, indexOfLastPost);
+
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  }
+
+  const previousPage = () => {
+    if(currentPage !== 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const nextPage = () => {
+    if(currentPage !== Math.ceil(products.length / postsPerPage)) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  // ! End of Pagination
+  
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,9 +55,10 @@ const Shop = () => {
         navigate("/error");
       }
     };
-
+    
     fetchProducts();
   }, []);
+  
 
   return (
     <>
@@ -39,9 +68,9 @@ const Shop = () => {
         </div>
       ) : (
         <section className="text-customText body-font">
-          <div className="container px-5 py-24 mx-auto">
+          <div className="container px-5 py-24 pb-6 mx-auto">
             <div className="flex flex-wrap -m-4">
-              {products.map((product) => {
+              {currentProducts.map((product) => {
                 return (
                   <Link
                     key={product._id}
@@ -81,6 +110,7 @@ const Shop = () => {
               })}
             </div>
           </div>
+          { products && <Pagination postsPerPage={postsPerPage} totalPosts={products.length} paginate={paginate} previousPage={previousPage} nextPage={nextPage} currentPage={currentPage} />}
         </section>
       )}
     </>
