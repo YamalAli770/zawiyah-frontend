@@ -233,7 +233,10 @@ const Cart = ({ setIsCartOpen }) => {
                         Shipping and taxes calculated at checkout.
                       </p>
                       <div className="mt-6">
-                        <button className="flex items-center justify-center rounded-md border border-transparent bg-customButton px-6 py-3 text-base font-medium text-white shadow-sm hover:brightness-50">
+                        <button className="flex items-center justify-center rounded-md border border-transparent bg-black text-white px-6 py-3 font-medium hover:bg-gray-600" onClick={() => {
+                          setIsCartOpen(false);
+                          navigate("/checkout", {state: { from: 'cart' }});
+                        }}>
                           Checkout
                         </button>
                       </div>

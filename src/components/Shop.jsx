@@ -44,7 +44,8 @@ const Shop = () => {
       try {
         const response = await axios.get(`${API_URL}api/products`);
         if (response.data) {
-          setProducts(response.data);
+          const availableProducts = response.data.filter((product) => product.isSold !== true);
+          setProducts(availableProducts);
           setInterval(() => {
             setLoading(false);
           }, [1000]);
@@ -68,7 +69,7 @@ const Shop = () => {
         </div>
       ) : (
         <section className="text-customText body-font">
-          <div className="container px-5 py-24 pb-6 mx-auto">
+          <div className="container px-5 py-24 pb-6 mx-auto min-h-screen">
             <div className="flex flex-wrap -m-4">
               {currentProducts.map((product) => {
                 return (

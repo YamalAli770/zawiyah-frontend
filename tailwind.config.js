@@ -16,6 +16,9 @@ export default {
         "customButtonText": "black",
         "customButtonBg": "white",
         "customLink": "#757577",
+      },
+      height: {
+        "thirtyFive": "35rem",
       }
     },
   },

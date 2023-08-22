@@ -18,8 +18,8 @@ const Pagination = ({ postsPerPage, totalPosts, paginate, previousPage, nextPage
       </div>
       <ul className="pagination flex text-black">
         <li>
-          <button onClick={previousPage} className="page-number w-7 h-7 bg-white hover:brightness-50 transition-all flex items-center rounded-s">
-          <MdNavigateBefore size="2rem" />   
+          <button onClick={previousPage} className="page-number w-7 h-7 bg-white hover:brightness-50 transition-all flex items-center justify-center rounded-s">
+          <MdNavigateBefore size="30" />   
       </button>
         </li>
         {pageNumbers.map((number) => (
@@ -28,8 +28,8 @@ const Pagination = ({ postsPerPage, totalPosts, paginate, previousPage, nextPage
           </li>
         ))}
         <li>
-          <button onClick={nextPage} className="page-number w-7 h-7 bg-white hover:brightness-50 transition-all flex items-center rounded-e">
-          <MdNavigateNext size="2rem" />
+          <button onClick={nextPage} className="page-number w-7 h-7 bg-white hover:brightness-50 transition-all flex items-center justify-center rounded-e">
+          <MdNavigateNext size="30" />
           </button>
         </li>
       </ul>

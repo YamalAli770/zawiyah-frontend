@@ -23,9 +23,16 @@ import { API_URL } from "../config"
 import ProtectedRoutes from "./components/ProtectedRoutes"
 
 import { useStore } from "./store"
+import Checkout from "./components/Checkout"
+import CheckoutSuccess from "./components/CheckoutSuccess"
+import CheckoutFailed from "./components/CheckoutFailed"
+import Order from "./components/Order"
+import AdminLogin from "./components/AdminLogin"
+import Dashboard from "./components/Dashboard"
 
 function App() {
   const auth = useStore(state => state.auth);
+  const isAdminRoute = window.location.pathname.includes('admin');
   // const user = useStore((state) => state.user);
   // const setUser = useStore((state) => state.setUser);
 
@@ -54,19 +61,20 @@ function App() {
   // };
 
   // useEffect(() => {
-  //   if(user && isAccessTokenCloseToExpiry(user.accessToken)) {
-  //     console.log("refreshing token");
+    //   if(user && isAccessTokenCloseToExpiry(user.accessToken)) {
+      //     console.log("refreshing token");
   //     handleTokenRefresh();
   //   }
   // }, [user]);
-
+  
   const [isCartOpen, setIsCartOpen] = useState(false);
   return (
-    <div className="bg-customBg text-customText">
-        <div className="max-w-custom m-auto">
+    <div className={isAdminRoute ? '' : 'bg-customBg text-customText'}>
+        <div className={isAdminRoute ? '' : 'max-w-custom m-auto'}>
         <BrowserRouter>
           {isCartOpen && <Cart setIsCartOpen={setIsCartOpen} />}
-          <Navbar setIsCartOpen={setIsCartOpen} />
+
+         { !isAdminRoute && <Navbar setIsCartOpen={setIsCartOpen} />}
           <Routes>
             <Route path="/" element={
               <>
@@ -79,18 +87,28 @@ function App() {
             <Route element={<ProtectedRoutes />}>
               <Route path="/new" element={<ListProduct />} />
             </Route>
+            <Route path="/register" element={auth ? <Navigate to="/" /> : <Register />} />
+            <Route path="/login" element={auth ? <Navigate to="/" /> : <Login /> } />
             <Route path="/about" element={<About />} />
             <Route path="/shop" element={<Shop />} />
             <Route path="/shop/:id" element={<Product />} />
-            <Route path="/register" element={auth ? <Navigate to="/" /> : <Register />} />
-            <Route path="/login" element={auth ? <Navigate to="/" /> : <Login /> } />
             <Route path="/contact" element={<Contact />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/success" element={<Success />} />
             <Route path="/cancel" element={<Cancel />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/checkout/success" element={<CheckoutSuccess />} />
+            <Route path="/checkout/error" element={<CheckoutFailed />} />
+            <Route path="/order/:id" element={<Order />} />
+
             <Route path="*" element={<Error />} />
+            
+            {/* Admin Routes */}
+            <Route path="/admin" element={<AdminLogin />} />
+            <Route path="/admin/dashboard" element={<Dashboard />} />
+
           </Routes>
-          <Footer />
+          { !isAdminRoute &&  <Footer />}
         </BrowserRouter>
         </div>
       </div>

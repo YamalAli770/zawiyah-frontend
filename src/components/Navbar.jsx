@@ -61,7 +61,7 @@ const Navbar = () => {
           <Link to="/contact" className="mr-5 hover:brightness-150">
             Contact
           </Link>
-          { user && user.accountType.toLowerCase() === "seller" && <Link to="/new" className="mr-5 hover:brightness-150">
+          { user && user.isAdmin !== 'true' && user.accountType.toLowerCase() === "seller" && <Link to="/new" className="mr-5 hover:brightness-150">
             List Product
           </Link>}
           { user && <button onClick={handleLogout} className="mr-5 hover:brightness-150">
@@ -88,13 +88,13 @@ const Navbar = () => {
           </Link>
         ) : (
           <div className="hidden md:flex gap-2">
-            <Link to="/profile">
+            { user.isAdmin !== "true" && <Link to="/profile">
               <AiOutlineUser
                 fontSize={25}
                 className="cursor-pointer hover:brightness-150"
               />
-            </Link>
-            {user && user.accountType.toLowerCase() === 'buyer' && (
+            </Link>}
+            {user && user.isAdmin !== 'true' && user.accountType.toLowerCase() === 'buyer' && (
             <div className="relative">
               <AiOutlineShoppingCart
                 fontSize={25}

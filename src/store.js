@@ -17,7 +17,13 @@ const store = (set) => ({
 
     // ! Cart
     setCart: (cart) => set({ cart: cart }),
-    deleteCart: () => set({ cart: null }),
+    deleteCart: () => set((cart) => ({
+        cart: {
+            ...cart,
+            cartItems: [],
+            cartTotal: 0
+        }
+    })),
 });
 
 export const useStore = create(store);
