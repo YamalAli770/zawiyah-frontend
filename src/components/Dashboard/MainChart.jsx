@@ -3,7 +3,6 @@ import { HiArrowUp } from 'react-icons/hi';
 import Chart from 'react-apexcharts';
 
 const MainChart = () => {
-  // Generate x-axis categories for the last 7 days from the current date
   const currentDate = new Date();
   const categories = Array.from({ length: 7 }, (_, index) => {
     const date = new Date(currentDate);
