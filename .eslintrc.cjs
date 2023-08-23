@@ -12,4 +12,9 @@ module.exports = {
   rules: {
     'react-refresh/only-export-components': 'warn',
   },
+  resolve: {
+    alias: {
+      'react-apexcharts': require.resolve('react-apexcharts'),
+    }
+  }   
 }
