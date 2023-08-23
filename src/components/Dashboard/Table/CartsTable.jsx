@@ -21,7 +21,7 @@ const CartsTable = () => {
     setLoading(true);
     const fetchCarts = async () => {
       try {
-        const response = await axiosPrivate.get(`${API_URL}api/cart/`, {
+        const response = await axiosPrivate.get(`${API_URL}/api/cart/`, {
           headers: {
             Authorization: 'Bearer ' + auth.accessToken
           }

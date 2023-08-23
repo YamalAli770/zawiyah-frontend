@@ -22,7 +22,7 @@ const Modal = ({ id, price, setOpenModal }) => {
     }
 
     try {
-      const response = await axiosPrivate.post(`${API_URL}api/bid/create`, { bidAmount, bidOn: id}, {
+      const response = await axiosPrivate.post(`${API_URL}/api/bid/create`, { bidAmount, bidOn: id}, {
         headers: {
           'Authorization': 'Bearer ' + auth.accessToken
         }

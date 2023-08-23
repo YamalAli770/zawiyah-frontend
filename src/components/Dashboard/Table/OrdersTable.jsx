@@ -21,7 +21,7 @@ const OrdersTable = () => {
     setLoading(true);
     const fetchOrders = async () => {
       try {
-        const response = await axiosPrivate.get(`${API_URL}api/order/`, {
+        const response = await axiosPrivate.get(`${API_URL}/api/order/`, {
           headers: {
             Authorization: 'Bearer ' + auth.accessToken
           }

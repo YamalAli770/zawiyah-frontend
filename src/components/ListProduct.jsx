@@ -68,7 +68,7 @@ const ListProduct = () => {
         formData.append("image", result.cdnUrl);
       }
 
-      const response = await axiosPrivate.post(`${API_URL}api/products/create`, formData, {
+      const response = await axiosPrivate.post(`${API_URL}/api/products/create`, formData, {
         headers: {
           Authorization: 'Bearer ' + auth,
         },

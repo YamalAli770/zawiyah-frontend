@@ -14,11 +14,11 @@ const Profile = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userDataResponse = await axios.get(`${API_URL}api/user/${user.username}`);
+        const userDataResponse = await axios.get(`${API_URL}/api/user/${user.username}`);
         const bidProductsIds = userDataResponse.data.productsBidOn;
         setUserData(userDataResponse.data);
 
-        const productsResponse = await axios.get(`${API_URL}api/products`);
+        const productsResponse = await axios.get(`${API_URL}/api/products`);
         const userBidProducts = productsResponse.data.filter((product) =>
           bidProductsIds.includes(product._id)
         );

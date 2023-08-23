@@ -24,7 +24,7 @@ const AdminLogin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${API_URL}api/auth/admin`, formData, { withCredentials: true });
+      const response = await axios.post(`${API_URL}/api/auth/admin`, formData, { withCredentials: true });
       if(response.data) {
         setAuth(response.data.accessToken);
         const fetchedUser = {

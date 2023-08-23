@@ -22,7 +22,7 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      const res = await axios.get(`${API_URL}api/auth/logout`, {
+      const res = await axios.get(`${API_URL}/api/auth/logout`, {
         withCredentials: true,
       });
       if(res.status === 204) {

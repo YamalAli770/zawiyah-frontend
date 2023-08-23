@@ -21,7 +21,7 @@ const UsersTable = () => {
     setLoading(true);
     const fetchUsers = async () => {
       try {
-        const response = await axiosPrivate.get(`${API_URL}api/user/`, {
+        const response = await axiosPrivate.get(`${API_URL}/api/user/`, {
           headers: {
             Authorization: 'Bearer ' + auth.accessToken
           }

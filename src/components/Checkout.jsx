@@ -77,7 +77,7 @@ const Checkout = () => {
     }
   
     try {
-      const response = await axiosPrivate.post(`${API_URL}api/order/create`, order, {
+      const response = await axiosPrivate.post(`${API_URL}/api/order/create`, order, {
         headers: {
           'Authorization': 'Bearer ' + auth
         }

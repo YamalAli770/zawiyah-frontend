@@ -42,7 +42,7 @@ const Shop = () => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${API_URL}api/products`);
+        const response = await axios.get(`${API_URL}/api/products`);
         if (response.data) {
           const availableProducts = response.data.filter((product) => product.isSold !== true);
           setProducts(availableProducts);

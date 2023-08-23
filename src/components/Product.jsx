@@ -31,7 +31,7 @@ const Product = () => {
     const fetchProduct = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${API_URL}api/products/${id}`);
+        const response = await axios.get(`${API_URL}/api/products/${id}`);
         if (response.data) {
           setProduct(response.data);
           setLoading(false);
@@ -66,7 +66,7 @@ const Product = () => {
   // ! Fetch Highest Bid
   const fetchHighestBid = async () => {
     try {
-      const response = await axiosPrivate.get(`${API_URL}api/bid/highest/${id}`, {
+      const response = await axiosPrivate.get(`${API_URL}/api/bid/highest/${id}`, {
         headers: {
           Authorization: 'Bearer ' + auth.accessToken
         }
@@ -82,7 +82,7 @@ const Product = () => {
   // ! Add To Cart
   const addToCart = async () => {
     try {
-      const response = await axiosPrivate.post(`${API_URL}api/cart/add`, {
+      const response = await axiosPrivate.post(`${API_URL}/api/cart/add`, {
         id: user.id,
         productId: id
       }, {

@@ -19,7 +19,7 @@ const Order = () => {
     setLoading(true);
     const fetchOrder = async () => {
         try {
-            const response = await axiosPrivate.get(`${API_URL}api/order/${id}`);
+            const response = await axiosPrivate.get(`${API_URL}/api/order/${id}`);
 
             if(response.data) {
                 setOrderData(response.data);

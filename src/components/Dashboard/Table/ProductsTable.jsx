@@ -21,7 +21,7 @@ const ProductsTable = () => {
     setLoading(true);
     const fetchProducts = async () => {
       try {
-        const response = await axiosPrivate.get(`${API_URL}api/products/`);
+        const response = await axiosPrivate.get(`${API_URL}/api/products/`);
         if (response.data) {
           setProducts(response.data);
         }

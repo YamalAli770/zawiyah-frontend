@@ -81,7 +81,7 @@ const Cart = ({ setIsCartOpen }) => {
   const removeFromCart = async (productId) => {
     try {
       const response = await axiosPrivate.delete(
-        `${API_URL}api/cart/remove`,
+        `${API_URL}/api/cart/remove`,
         { // ! need to add data in delete requests
           data: {
             id: user.id,

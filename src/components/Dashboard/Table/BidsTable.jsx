@@ -21,7 +21,7 @@ const BidsTable = () => {
     setLoading(true);
     const fetchBids = async () => {
       try {
-        const response = await axiosPrivate.get(`${API_URL}api/bid/`, {
+        const response = await axiosPrivate.get(`${API_URL}/api/bid/`, {
           headers: {
             Authorization: 'Bearer ' + auth.accessToken
           }

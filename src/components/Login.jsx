@@ -27,14 +27,14 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${API_URL}api/auth/login`, {
+      const response = await axios.post(`${API_URL}/api/auth/login`, {
         email,
         password
       }, { withCredentials: true });
       if(response.data) {
         const {_id, username, accessToken, accountType} = response.data;
 
-        const cart = await axios.get(`${API_URL}api/cart/${_id}`, {
+        const cart = await axios.get(`${API_URL}/api/cart/${_id}`, {
           headers: {
             'Authorization': 'Bearer ' + accessToken,
           }
