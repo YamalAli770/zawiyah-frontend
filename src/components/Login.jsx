@@ -34,16 +34,17 @@ const Login = () => {
       if(response.data) {
         const {_id, username, accessToken, accountType} = response.data;
 
-        const cart = await axios.get(`${API_URL}/api/cart/${_id}`, {
-          headers: {
-            'Authorization': 'Bearer ' + accessToken,
+        if(accountType === "buyer" || accountType === "Buyer") {
+          const cart = await axios.get(`${API_URL}/api/cart/${_id}`, {
+            headers: {
+              'Authorization': 'Bearer ' + accessToken,
+            }
+          });
+          if(cart.data) {
+            setCart(cart.data);
+            localStorage.setItem("cart", JSON.stringify(cart.data));
           }
-        });
-
-        if(cart.data) {
-          setCart(cart.data);
-          localStorage.setItem("cart", JSON.stringify(cart.data));
-        }
+        };
 
         const fetchedUser = {
           id: _id,

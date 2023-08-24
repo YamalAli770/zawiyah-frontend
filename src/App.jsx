@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import About from "./components/About"
 import Cart from "./components/Cart"
@@ -32,7 +32,13 @@ import Dashboard from "./components/Dashboard"
 
 function App() {
   const auth = useStore(state => state.auth);
-  const isAdminRoute = window.location.pathname.includes('admin');
+  const user = useStore(state => state.user);
+
+  const [isAdminRoute, setIsAdminRoute] = useState(false);
+
+  useEffect(() => {
+    setIsAdminRoute(window.location.pathname.includes('admin'));
+  }, []);
   // const user = useStore((state) => state.user);
   // const setUser = useStore((state) => state.setUser);
 
@@ -104,13 +110,13 @@ function App() {
             <Route path="*" element={<Error />} />
             
             {/* Admin Routes */}
-            <Route path="/admin" element={<AdminLogin />} />
-            <Route path="/admin/dashboard" element={<Dashboard />} />
+            <Route path="/admin" element={ auth && user.isAdmin === 'true' ? <Navigate to="/admin/dashboard" /> : auth ? <Navigate to="/" replace={true} /> : <AdminLogin />} />
+            <Route path="/admin/dashboard" element={ auth && user.isAdmin ? <Dashboard /> : <Navigate to="/" /> } />
 
           </Routes>
           { !isAdminRoute &&  <Footer />}
         </BrowserRouter>
-        </div>
+        </div>!
       </div>
   )
 }

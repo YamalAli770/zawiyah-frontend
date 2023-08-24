@@ -6,7 +6,7 @@ const useRefreshToken = () => {
     const setAuth = useStore(state => state.setAuth);
 
     const refresh = async () => {
-        const response = await axios.get(`${API_URL}api/auth/refresh-token`, {
+        const response = await axios.get(`${API_URL}/api/auth/refresh-token`, {
             withCredentials: true
         });
         localStorage.setItem("auth", JSON.stringify(response.data));

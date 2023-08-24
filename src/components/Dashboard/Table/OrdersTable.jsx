@@ -27,11 +27,10 @@ const OrdersTable = () => {
           }
         });
         if (response.data) {
-          console.log(response.data);
           setOrders(response.data);
         }
       } catch (err) {
-        console.log(err.response.data.message);
+        console.log(err);
       } finally {
         setLoading(false);
       }

@@ -26,15 +26,20 @@ const AdminLogin = () => {
     try {
       const response = await axios.post(`${API_URL}/api/auth/admin`, formData, { withCredentials: true });
       if(response.data) {
-        setAuth(response.data.accessToken);
+        const {_id, username, accessToken, accountType, isAdmin} = response.data;
+        
         const fetchedUser = {
-          id: response.data._id,
-          username: response.data.username,
-          isAdmin: response.data.isAdmin
+          id: _id,
+          username: username,
+          accountType: accountType,
+          isAdmin: isAdmin
         };
-        setUser(fetchedUser);
-        localStorage.setItem('auth', JSON.stringify(response.data.accessToken));
+        
         localStorage.setItem('user', JSON.stringify(fetchedUser));
+        localStorage.setItem('auth', JSON.stringify(accessToken));
+        setUser(fetchedUser);
+        setAuth(accessToken);
+
         navigate('/admin/dashboard');
       }
     } catch (error) {

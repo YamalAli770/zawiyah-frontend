@@ -1,12 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useReactTable, getCoreRowModel, flexRender, getPaginationRowModel, getSortedRowModel, getFilteredRowModel } from '@tanstack/react-table'
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
-import { API_URL } from '../../../../config';
+import { API_URL, TOAST_CONFIG } from '../../../../config';
 import { useStore } from '../../../store';
 import { Triangle } from 'react-loader-spinner';
 import { MdNavigateNext, MdNavigateBefore } from 'react-icons/md'
 import { AiFillCaretUp, AiFillCaretDown } from 'react-icons/ai'
 import { BsSearch } from 'react-icons/bs'
+import { toast } from 'react-toastify';
 
 const BidsTable = () => {
   const auth = useStore(state => state.auth);
@@ -30,7 +31,7 @@ const BidsTable = () => {
           setBids(response.data);
         }
       } catch (err) {
-        console.log(err.response.data.message);
+          console.log(err);
       } finally {
         setLoading(false);
       }
