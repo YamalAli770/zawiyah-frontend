@@ -40,6 +40,15 @@
   display: inline-block;
 }
 
+.item {
+  /* width: 56%; */
+  overflow: visible;
+  stroke: #fff;
+  stroke-width: 1;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
 .my-config {
   --cfg-pubkey: "e7622d60287398e37912";
   --cfg-img-only: 1;
